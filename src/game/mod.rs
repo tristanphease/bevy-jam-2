@@ -3,3 +3,4 @@ pub mod components;
 pub mod game;
 pub mod input;
 pub mod player;
+pub mod shot;

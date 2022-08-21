@@ -2,8 +2,8 @@ use bevy::prelude::*;
 use game::{
     camera::{camera_follow_player, setup_camera},
     game::setup_world,
-    input::keyboard_input,
-    player::setup_player,
+    input::{keyboard_input, mouse_input},
+    player::setup_player, shot::{move_shots, setup_shots},
 };
 use start_menu::{button_system, close_menu, setup_menu};
 
@@ -28,12 +28,15 @@ fn main() {
             SystemSet::on_enter(GameState::Game)
                 .with_system(setup_camera)
                 .with_system(setup_player)
-                .with_system(setup_world),
+                .with_system(setup_world)
+                .with_system(setup_shots)
         )
         .add_system_set(
             SystemSet::on_update(GameState::Game)
                 .with_system(camera_follow_player)
-                .with_system(keyboard_input),
+                .with_system(keyboard_input)
+                .with_system(mouse_input)
+                .with_system(move_shots)
         )
         .run();
 }
