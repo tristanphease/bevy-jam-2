@@ -3,7 +3,8 @@ use game::{
     camera::{camera_follow_player, setup_camera},
     game::setup_world,
     input::{keyboard_input, mouse_input},
-    player::setup_player, shot::{move_shots, setup_shots},
+    player::setup_player,
+    shot::{move_shots, setup_shots, shot_collide},
 };
 use start_menu::{button_system, close_menu, setup_menu};
 
@@ -37,6 +38,7 @@ fn main() {
                 .with_system(keyboard_input)
                 .with_system(mouse_input)
                 .with_system(move_shots)
+                .with_system(shot_collide)
         )
         .run();
 }

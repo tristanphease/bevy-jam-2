@@ -1,11 +1,13 @@
 use bevy::prelude::*;
 
-use super::components::{Hitbox, Player};
+use super::components::{Health, Hitbox, Player};
 
 const PLAYER_TEXTURE_SIZE: Vec2 = Vec2::new(106.0, 153.0);
 const PLAYER_SIZE: Vec2 = Vec2::new(100.0, 150.0);
 
 const PLAYER_START_POS: Vec2 = Vec2::new(200.0, 0.0);
+
+const PLAYER_HEALTH: f32 = 100.0;
 
 pub fn setup_player(
     mut commands: Commands,
@@ -30,5 +32,18 @@ pub fn setup_player(
             ..default()
         })
         .insert(Player)
-        .insert(Hitbox(PLAYER_SIZE));
+        .insert(Hitbox(PLAYER_SIZE))
+        .insert(Health(PLAYER_HEALTH));
+}
+
+pub fn check_player_death(
+    mut commands: Commands,
+    player_query: Query<&Health, With<Player>>,
+) {
+    let player_health = player_query.single().0;
+
+    if player_health <= 0.0 {
+        //dead, change state here
+        
+    }
 }

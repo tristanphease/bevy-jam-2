@@ -13,8 +13,8 @@ pub fn camera_follow_player(
     player_query: Query<&Transform, With<Player>>,
     mut camera_query: Query<&mut Transform, (With<Camera>, Without<Player>)>,
 ) {
-    let player_trans = player_query.get_single().expect("Couldn't find player");
-    let mut camera_trans = camera_query.get_single_mut().expect("Couldn't find camera");
+    let player_trans = player_query.single();
+    let mut camera_trans = camera_query.single_mut();
 
     camera_trans.translation = Vec3 {
         x: player_trans.translation.x,

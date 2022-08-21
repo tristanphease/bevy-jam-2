@@ -12,3 +12,15 @@ pub struct CollidesPlayer;
 
 #[derive(Component)]
 pub struct Direction(pub f32);
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ShotType {
+    Player,
+    Enemy,
+}
+
+#[derive(Component)]
+pub struct CollidesShot(pub ShotType);
+
+#[derive(Component)]
+pub struct Health(pub f32);
