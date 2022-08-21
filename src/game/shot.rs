@@ -1,3 +1,5 @@
+use std::time::Duration;
+
 use super::components::{CollidesShot, Direction, Health, Hitbox, ShotType};
 use bevy::{
     prelude::{shape::Circle, *},
@@ -8,9 +10,13 @@ use bevy::{
 const SHOT_SPEED: f32 = 500.0;
 const SHOT_RADIUS: f32 = 20.0;
 const SHOT_DAMAGE: f32 = 2.0;
+const SHOT_TIME_LENGTH: f32 = 10.0;
 
 #[derive(Component)]
-pub struct Shot;
+pub struct Shot {
+    timer: Timer,
+    shot_type: ShotType,
+}
 
 #[derive(Default)]
 pub struct ShotResource {
@@ -50,31 +56,40 @@ pub fn create_shot(
             material,
             ..default()
         })
-        .insert(Shot)
+        .insert(Shot {
+            timer: Timer::new(Duration::from_secs_f32(SHOT_TIME_LENGTH), false),
+            shot_type: ShotType::Enemy,
+        })
         .insert(Direction(angle))
         .insert(Hitbox(Vec2::new(SHOT_RADIUS * 2.0, SHOT_RADIUS * 2.0)));
 }
 
-pub fn move_shots(
-    mut shot_query: Query<(&mut Transform, &Direction), With<Shot>>,
+pub fn update_shots(
+    mut commands: Commands,
+    mut shot_query: Query<(&mut Transform, &Direction, &mut Shot, Entity)>,
     time: Res<Time>,
 ) {
-    for (mut trans, dir) in shot_query.iter_mut() {
+    for (mut trans, dir, mut shot, entity) in shot_query.iter_mut() {
         trans.translation.x += SHOT_SPEED * f32::cos(dir.0) * time.delta_seconds();
         trans.translation.y += SHOT_SPEED * f32::sin(dir.0) * time.delta_seconds();
+        shot.timer.tick(time.delta());
+
+        if shot.timer.finished() {
+            commands.entity(entity).despawn();
+        }
     }
 }
 
 pub fn shot_collide(
     mut commands: Commands,
-    shot_query: Query<(&Transform, &Hitbox, Entity, &CollidesShot), With<Shot>>,
+    shot_query: Query<(&Transform, &Hitbox, Entity, &Shot), With<Shot>>,
     mut collides_shot_query: Query<(&Transform, &Hitbox, &mut Health, &CollidesShot)>,
 ) {
-    for (shot_trans, shot_hitbox, shot_entity, shot_collides) in shot_query.iter() {
+    for (shot_trans, shot_hitbox, shot_entity, shot) in shot_query.iter() {
         for (object_trans, object_hitbox, mut object_health, object_collides) in
             collides_shot_query.iter_mut()
         {
-            if shot_collides.0 == object_collides.0
+            if shot.shot_type == object_collides.0
                 && collide(
                     shot_trans.translation,
                     shot_hitbox.0,
