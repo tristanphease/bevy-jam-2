@@ -22,7 +22,7 @@ pub fn setup_player(
     let texture_atlas = TextureAtlas::from_grid(texture_handler, PLAYER_TEXTURE_SIZE, 1, 1);
     let texture_atlas_handle = texture_atlases.add(texture_atlas);
 
-    let health_bar = get_health_bar(&mut commands, health_bar_handles);
+    let health_bar = get_health_bar(&mut commands, health_bar_handles, PLAYER_SIZE.y/2.0);
 
     commands
         .spawn_bundle(SpriteSheetBundle {

@@ -2,40 +2,41 @@ use std::f32::consts::{FRAC_PI_2, PI};
 
 use bevy::{
     prelude::*,
-    render::{mesh::Indices, render_resource::PrimitiveTopology},
-    sprite::{MaterialMesh2dBundle, Mesh2dHandle},
+    render::{mesh::Indices, render_resource::{PrimitiveTopology, AsBindGroup, ShaderRef}},
+    sprite::{MaterialMesh2dBundle, Mesh2dHandle, Material2d}, reflect::TypeUuid,
 };
 
-pub fn get_health_bar(commands: &mut Commands, health_bar: Res<HealthBarHandles>) -> Entity {
+pub fn get_health_bar(commands: &mut Commands, health_bar: Res<HealthBarHandles>, offset_y: f32) -> Entity {
     commands
         .spawn_bundle(MaterialMesh2dBundle {
             mesh: Mesh2dHandle(health_bar.mesh_handle.clone()),
             material: health_bar.material_handle.clone(),
-            transform: Transform::from_xyz(0.0, -10.0, 1.0).with_scale(Vec3::new(50.0, 50.0, 1.0)),
+            transform: Transform::from_xyz(0.0, offset_y, 1.0).with_scale(Vec3::new(10.0, 10.0, 1.0)),
             ..default()
         })
         .id()
 }
 
-const BAR_WIDTH: i32 = 4;
+const BAR_WIDTH: i32 = 8;
 const BAR_HEIGHT: i32 = 1;
-const ANGLE_NUM: u32 = 6;
+const ANGLE_NUM: u32 = 8;
+const BORDER_SIZE: f32 = 0.2;
 const OUTER_RAD: f32 = BAR_HEIGHT as f32 - 0.1;
-const INNER_RAD: f32 = BAR_HEIGHT as f32 - 0.2;
+const INNER_RAD: f32 = BAR_HEIGHT as f32 - 0.1 - BORDER_SIZE;
 
 #[derive(Default)]
 pub struct HealthBarHandles {
     mesh_handle: Handle<Mesh>,
-    material_handle: Handle<ColorMaterial>,
+    material_handle: Handle<HealthBarMaterial>,
 }
 
 pub fn setup_health_bar(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<ColorMaterial>>,
+    mut materials: ResMut<Assets<HealthBarMaterial>>,
 ) {
     let mesh_handle = meshes.add(create_bar());
-    let material_handle = materials.add(ColorMaterial::from(Color::ORANGE));
+    let material_handle = materials.add(HealthBarMaterial::default());
 
     commands.insert_resource(HealthBarHandles {
         mesh_handle,
@@ -47,22 +48,28 @@ fn create_bar() -> Mesh {
     let mut mesh = Mesh::new(PrimitiveTopology::TriangleList);
 
     let mut vertices = Vec::new();
-    let x = -BAR_WIDTH as f32 / 2.0 + 1.0;
+    let x_left = -BAR_WIDTH as f32 / 2.0 + 1.0;
     let y = 0.0;
     let start_angle = FRAC_PI_2;
-    add_vertices(&mut vertices, x, y, OUTER_RAD, start_angle, true);
-    add_vertices(&mut vertices, x, y, INNER_RAD, start_angle, true);
+    add_vertices(&mut vertices, x_left, y, OUTER_RAD, start_angle, true);
+    add_vertices(&mut vertices, x_left, y, INNER_RAD, start_angle, true);
 
-    let x = BAR_WIDTH as f32 / 2.0 - 1.0;
-    add_vertices(&mut vertices, x, y, OUTER_RAD, start_angle, false);
-    add_vertices(&mut vertices, x, y, INNER_RAD, start_angle, false);
+    let x_right = BAR_WIDTH as f32 / 2.0 - 1.0;
+    add_vertices(&mut vertices, x_right, y, OUTER_RAD, start_angle, false);
+    add_vertices(&mut vertices, x_right, y, INNER_RAD, start_angle, false);
+
+    //2 special vertices for inside
+    vertices.push([x_left, y, 0.0]);
+    vertices.push([x_right, y, 0.0]);
 
     mesh.insert_attribute(Mesh::ATTRIBUTE_POSITION, vertices);
 
-    let normals = vec![[0.0, 1.0, 0.0]; ANGLE_NUM as usize * 4];
+    let normals = vec![[0.0, 1.0, 0.0]; ANGLE_NUM as usize * 4 + 2];
     mesh.insert_attribute(Mesh::ATTRIBUTE_NORMAL, normals);
 
-    let uvs = vec![[1.0, 1.0]; ANGLE_NUM as usize * 4];
+    let mut uvs = vec![[1.0, 1.0]; ANGLE_NUM as usize * 4];
+    uvs.push([1.0 / (BAR_WIDTH as f32), 1.0]);
+    uvs.push([((BAR_WIDTH as f32) - 1.0) / (BAR_WIDTH as f32), 1.0]);
     mesh.insert_attribute(Mesh::ATTRIBUTE_UV_0, uvs);
 
     let mut indices = Vec::new();
@@ -89,6 +96,20 @@ fn create_bar() -> Mesh {
             ANGLE_NUM * 3,
         ],
     );
+
+    //add inside indices
+    let left_inside_index = ANGLE_NUM * 4;
+    for i in ANGLE_NUM..ANGLE_NUM + ANGLE_NUM - 1 {
+        indices.extend([left_inside_index, i + 1, i]);
+    }
+
+    let right_inside_index = ANGLE_NUM * 4 + 1;
+    for i in ANGLE_NUM*3..ANGLE_NUM*3 + ANGLE_NUM - 1 {
+        indices.extend([right_inside_index, i + 1, i]);
+    }
+
+    add_quad_indices(&mut indices, [ANGLE_NUM * 3, right_inside_index, ANGLE_NUM * 2 - 1, left_inside_index]);
+    add_quad_indices(&mut indices, [right_inside_index, ANGLE_NUM * 4 - 1, left_inside_index, ANGLE_NUM]);
 
     mesh.set_indices(Some(Indices::U32(indices)));
 
@@ -117,4 +138,45 @@ fn add_vertices(
 fn add_quad_indices(indices: &mut Vec<u32>, points: [u32; 4]) {
     indices.extend([points[0], points[2], points[1]].iter());
     indices.extend([points[1], points[2], points[3]].iter());
+}
+
+#[derive(AsBindGroup, TypeUuid, Debug, Clone)]
+#[uuid = "84a33ce5-9d30-4855-89a6-828590468b1f"]
+pub struct HealthBarMaterial {
+    #[uniform(0)]
+    pub amount: f32,
+
+    #[uniform(1)]
+    width: f32,
+}
+
+impl HealthBarMaterial {
+    pub fn new(amount: f32) -> Self {
+        Self {
+            amount,
+            width: BAR_WIDTH as f32,
+        }
+    }
+
+    pub fn set_amount(&mut self, amount: f32) {
+        self.amount = amount;
+    }
+}
+
+impl Default for HealthBarMaterial {
+    fn default() -> Self {
+        Self { 
+            amount: 1.0,
+            width: BAR_WIDTH as f32,
+        }
+    }
+}
+
+impl Material2d for HealthBarMaterial {
+    fn vertex_shader() -> ShaderRef {
+        "shaders/health_bar.wgsl".into()
+    }
+    fn fragment_shader() -> ShaderRef {
+        "shaders/health_bar.wgsl".into()
+    }
 }

@@ -1,8 +1,8 @@
-use bevy::prelude::*;
+use bevy::{prelude::*, sprite::Material2dPlugin};
 use game::{
     camera::{camera_follow_player, setup_camera},
     game::setup_world,
-    health_bar::setup_health_bar,
+    health_bar::{setup_health_bar, HealthBarMaterial},
     input::{keyboard_input, mouse_input},
     player::{check_player_death, setup_player},
     shot::{setup_shots, shot_collide, update_shots},
@@ -23,6 +23,7 @@ fn main() {
         .add_state(GameState::StartMenu)
         .add_plugins(DefaultPlugins)
         .init_resource::<Time>()
+        .add_plugin(Material2dPlugin::<HealthBarMaterial>::default())
         .add_startup_system(setup_health_bar)
         .add_system_set(SystemSet::on_enter(GameState::StartMenu).with_system(setup_menu))
         .add_system_set(SystemSet::on_update(GameState::StartMenu).with_system(button_system))
