@@ -99,7 +99,7 @@ pub fn shot_collide(
                 .is_some()
             {
                 commands.entity(shot_entity).despawn();
-                object_health.0 -= SHOT_DAMAGE;
+                object_health.current -= SHOT_DAMAGE;
             }
         }
     }

@@ -23,4 +23,22 @@ pub enum ShotType {
 pub struct CollidesShot(pub ShotType);
 
 #[derive(Component)]
-pub struct Health(pub f32);
+pub struct Health {
+    pub current: f32,
+    pub maximum: f32,
+}
+
+impl Health {
+    pub fn new(amount: f32) -> Self {
+        Self {
+            current: amount,
+            maximum: amount,
+        }
+    }
+}
+
+
+#[derive(Component)]
+pub struct Spawner {
+    pub timer: Timer,
+}

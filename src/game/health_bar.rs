@@ -6,15 +6,42 @@ use bevy::{
     sprite::{MaterialMesh2dBundle, Mesh2dHandle, Material2d}, reflect::TypeUuid,
 };
 
-pub fn get_health_bar(commands: &mut Commands, health_bar: Res<HealthBarHandles>, offset_y: f32) -> Entity {
+use super::components::Health;
+
+#[derive(Component)]
+pub struct HealthBar;
+
+pub fn generate_health_bar(
+    commands: &mut Commands, 
+    meshes: &mut ResMut<Assets<Mesh>>, 
+    materials: &mut ResMut<Assets<HealthBarMaterial>>,
+    offset_y: f32,
+) -> Entity {
+    let (mesh_handle, material_handle) = get_health_bar_handles(meshes, materials);
     commands
         .spawn_bundle(MaterialMesh2dBundle {
-            mesh: Mesh2dHandle(health_bar.mesh_handle.clone()),
-            material: health_bar.material_handle.clone(),
+            mesh: Mesh2dHandle(mesh_handle),
+            material: material_handle,
             transform: Transform::from_xyz(0.0, offset_y, 1.0).with_scale(Vec3::new(10.0, 10.0, 1.0)),
             ..default()
         })
+        .insert(HealthBar)
         .id()
+}
+
+pub fn update_health_bars(
+    mut materials: ResMut<Assets<HealthBarMaterial>>,
+    query: Query<(&Health, &Children)>,
+    health_bar_query: Query<&Handle<HealthBarMaterial>, With<HealthBar>>,
+) {
+    for (health, children) in query.iter() {
+        for child in children.iter() {
+            if let Ok(bar_material_handle) = health_bar_query.get(*child) {
+                let health_fraction = health.current / health.maximum;
+                materials.get_mut(bar_material_handle).unwrap().set_amount(health_fraction);
+            }
+        }
+    }
 }
 
 const BAR_WIDTH: i32 = 8;
@@ -24,24 +51,14 @@ const BORDER_SIZE: f32 = 0.2;
 const OUTER_RAD: f32 = BAR_HEIGHT as f32 - 0.1;
 const INNER_RAD: f32 = BAR_HEIGHT as f32 - 0.1 - BORDER_SIZE;
 
-#[derive(Default)]
-pub struct HealthBarHandles {
-    mesh_handle: Handle<Mesh>,
-    material_handle: Handle<HealthBarMaterial>,
-}
-
-pub fn setup_health_bar(
-    mut commands: Commands,
-    mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<HealthBarMaterial>>,
-) {
+pub fn get_health_bar_handles(
+    meshes: &mut ResMut<Assets<Mesh>>,
+    materials: &mut ResMut<Assets<HealthBarMaterial>>,
+) -> (Handle<Mesh>, Handle<HealthBarMaterial>) {
     let mesh_handle = meshes.add(create_bar());
     let material_handle = materials.add(HealthBarMaterial::default());
 
-    commands.insert_resource(HealthBarHandles {
-        mesh_handle,
-        material_handle,
-    });
+    (mesh_handle, material_handle)
 }
 
 fn create_bar() -> Mesh {

@@ -5,6 +5,9 @@ use super::components::Hitbox;
 const CAULDRON_TEXTURE_SIZE: Vec2 = Vec2::new(353.0, 296.0);
 const CAULDRON_SIZE: Vec2 = Vec2::new(350.0, 300.0);
 
+pub const GAME_WIDTH: usize = 2_000;
+pub const GAME_HEIGHT: usize = 2_000;
+
 /// Sets up objects in world
 pub fn setup_world(
     mut commands: Commands,

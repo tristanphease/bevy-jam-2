@@ -2,7 +2,7 @@ use bevy::prelude::*;
 
 use super::{
     components::Player,
-    shot::{create_shot, ShotResource},
+    shot::{create_shot, ShotResource}, game::{GAME_WIDTH, GAME_HEIGHT},
 };
 
 const SPEED: f32 = 200.0;
@@ -26,6 +26,12 @@ pub fn keyboard_input(
     if keys.pressed(KeyCode::D) {
         player_trans.translation.x += SPEED * time.delta_seconds();
     }
+
+    //clamp within game border
+    //player_trans.translation.x = f32::clamp(player_trans.translation.x, -(GAME_WIDTH as f32)/2.0, (GAME_WIDTH as f32)/2.0);
+    //player_trans.translation.y = f32::clamp(player_trans.translation.y, -(GAME_HEIGHT as f32)/2.0, (GAME_HEIGHT as f32)/2.0);
+    player_trans.translation.x = f32::clamp(player_trans.translation.x, -(GAME_WIDTH as f32), (GAME_WIDTH as f32));
+    player_trans.translation.y = f32::clamp(player_trans.translation.y, -(GAME_HEIGHT as f32), (GAME_HEIGHT as f32));
 }
 
 pub fn mouse_input(
