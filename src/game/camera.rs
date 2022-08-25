@@ -2,7 +2,7 @@ use bevy::prelude::*;
 
 use super::components::Player;
 
-const CAMERA_DIST: f32 = 10.0;
+const CAMERA_DIST: f32 = 1000.0;
 
 pub fn setup_camera(mut commands: Commands) {
     //camera

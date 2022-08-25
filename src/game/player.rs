@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 
 use super::{
-    components::{Health, Hitbox, Player},
+    components::{Health, Hitbox, Player, ShotSpawnOffset},
     health_bar::{generate_health_bar, HealthBarMaterial, WithHealthBar},
 };
 
@@ -11,6 +11,8 @@ const PLAYER_SIZE: Vec2 = Vec2::new(100.0, 150.0);
 const PLAYER_START_POS: Vec2 = Vec2::new(200.0, 0.0);
 
 const PLAYER_HEALTH: f32 = 100.0;
+
+const PLAYER_SHOT_OFFSET: Vec2 = Vec2::new(-30.0, 60.0);
 
 pub fn setup_player(
     mut commands: Commands,
@@ -44,7 +46,8 @@ pub fn setup_player(
         .insert(Player)
         .insert(Hitbox(PLAYER_SIZE))
         .insert(Health::new(PLAYER_HEALTH))
-        .insert(WithHealthBar(health_bar));
+        .insert(WithHealthBar(health_bar))
+        .insert(ShotSpawnOffset(PLAYER_SHOT_OFFSET));
 }
 
 pub fn check_player_death(mut commands: Commands, player_query: Query<&Health, With<Player>>) {

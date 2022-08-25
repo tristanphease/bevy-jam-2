@@ -37,8 +37,10 @@ impl Health {
     }
 }
 
-
 #[derive(Component)]
 pub struct Spawner {
     pub timer: Timer,
 }
+
+#[derive(Component)]
+pub struct ShotSpawnOffset(pub Vec2);

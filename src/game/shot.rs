@@ -40,7 +40,7 @@ pub fn setup_shots(
 
 pub fn create_shot(
     commands: &mut Commands,
-    position: &Vec3,
+    position: Vec2,
     angle: f32,
     mesh: Handle<Mesh>,
     material: Handle<ColorMaterial>,
@@ -49,7 +49,11 @@ pub fn create_shot(
         .spawn()
         .insert_bundle(MaterialMesh2dBundle {
             transform: Transform {
-                translation: *position,
+                translation: Vec3::new(
+                    position.x,
+                    position.y,
+                    1.0
+                ),
                 ..default()
             },
             mesh: Mesh2dHandle(mesh),

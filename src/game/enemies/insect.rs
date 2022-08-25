@@ -42,7 +42,6 @@ pub fn spawn_insect(
     .insert(Health::new(INSECT_HEALTH))
     .insert(CollidesShot(ShotType::Enemy))
     .insert(Insect)
-    .insert(InsectAI { target_position: Vec2::new(x, y) })
+    .insert(InsectAI { target_position: Vec2::new(x, y) }) //dummy position, should get overwritten
     .insert(WithHealthBar(health_bar));
 }
-

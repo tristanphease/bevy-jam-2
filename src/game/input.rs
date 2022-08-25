@@ -1,7 +1,7 @@
-use bevy::prelude::*;
+use bevy::{prelude::*, math::Vec3Swizzles};
 
 use super::{
-    components::Player,
+    components::{Player, ShotSpawnOffset},
     shot::{create_shot, ShotResource}, game::{GAME_WIDTH, GAME_HEIGHT},
 };
 
@@ -38,23 +38,26 @@ pub fn mouse_input(
     mut commands: Commands,
     buttons: Res<Input<MouseButton>>,
     windows: Res<Windows>,
-    player_query: Query<&Transform, With<Player>>,
+    player_query: Query<(&Transform, &ShotSpawnOffset), With<Player>>,
     shot_res: Res<ShotResource>,
 ) {
     let window = windows.get_primary().unwrap();
 
     if let Some(mouse_pos) = window.cursor_position() {
         if buttons.just_pressed(MouseButton::Left) {
-            let x_diff = mouse_pos.x - window.width() / 2.0;
-            let y_diff = mouse_pos.y - window.height() / 2.0;
+
+            let (player_trans, shot_offset) = player_query.get_single().unwrap();
+
+            let x_diff = mouse_pos.x - window.width() / 2.0 - shot_offset.0.x;
+            let y_diff = mouse_pos.y - window.height() / 2.0 - shot_offset.0.y;
 
             let angle = f32::atan2(y_diff, x_diff);
 
-            let player_trans = player_query.get_single().unwrap();
+            
 
             create_shot(
                 &mut commands,
-                &player_trans.translation,
+                player_trans.translation.xy() + shot_offset.0,
                 angle,
                 shot_res.mesh.clone(),
                 shot_res.material.clone(),
