@@ -33,8 +33,8 @@ pub fn setup_player(
             },
             transform: Transform::from_translation(Vec3::new(
                 PLAYER_START_POS.x,
-                0.0,
                 PLAYER_START_POS.y,
+                3.0,
             )),
             texture_atlas: texture_atlas_handle,
             ..default()

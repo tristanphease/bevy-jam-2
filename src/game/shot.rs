@@ -100,6 +100,8 @@ pub fn shot_collide(
             {
                 commands.entity(shot_entity).despawn();
                 object_health.current -= SHOT_DAMAGE;
+
+                break;
             }
         }
     }
