@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::game::{components::{Hitbox, Health}, health_bar::{generate_health_bar, HealthBarMaterial, WithHealthBar}};
+use crate::game::{components::{Hitbox, Health, ShotType, CollidesShot}, health_bar::{generate_health_bar, HealthBarMaterial, WithHealthBar}};
 
 use super::insect_ai::InsectAI;
 
@@ -38,6 +38,7 @@ pub fn spawn_insect(
     })
     .insert(Hitbox(INSECT_SIZE))
     .insert(Health::new(INSECT_HEALTH))
+    .insert(CollidesShot(ShotType::Enemy))
     .insert(Insect)
     .insert(InsectAI { target_position: Vec2::new(x, y) })
     .insert(WithHealthBar(health_bar));
