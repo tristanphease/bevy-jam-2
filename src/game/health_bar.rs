@@ -9,7 +9,12 @@ use bevy::{
 use super::components::Health;
 
 #[derive(Component)]
-pub struct HealthBar;
+pub struct WithHealthBar(pub Entity);
+
+#[derive(Component)]
+pub struct HealthBar {
+    offset_y: f32,
+}
 
 pub fn generate_health_bar(
     commands: &mut Commands, 
@@ -25,21 +30,30 @@ pub fn generate_health_bar(
             transform: Transform::from_xyz(0.0, offset_y, 1.0).with_scale(Vec3::new(10.0, 10.0, 1.0)),
             ..default()
         })
-        .insert(HealthBar)
+        .insert(HealthBar { offset_y })
         .id()
 }
 
 pub fn update_health_bars(
     mut materials: ResMut<Assets<HealthBarMaterial>>,
-    query: Query<(&Health, &Children)>,
+    query: Query<(&Health, &WithHealthBar), Without<HealthBar>>,
     health_bar_query: Query<&Handle<HealthBarMaterial>, With<HealthBar>>,
 ) {
-    for (health, children) in query.iter() {
-        for child in children.iter() {
-            if let Ok(bar_material_handle) = health_bar_query.get(*child) {
-                let health_fraction = health.current / health.maximum;
-                materials.get_mut(bar_material_handle).unwrap().set_amount(health_fraction);
-            }
+    for (health, health_bar_entity) in query.iter() {
+        if let Ok(bar_material_handle) = health_bar_query.get(health_bar_entity.0) {
+            let health_fraction = health.current / health.maximum;
+            materials.get_mut(bar_material_handle).unwrap().set_amount(health_fraction);
+        }
+    }
+}
+
+pub fn update_health_bar_positions(
+    query: Query<(&WithHealthBar, &Transform), Without<HealthBar>>,
+    mut health_bar_query: Query<(&mut Transform, &HealthBar)>,
+) {
+    for (health_bar_entity, parent_transform) in query.iter() {
+        if let Ok((mut bar_transform, health_bar)) = health_bar_query.get_mut(health_bar_entity.0) {
+            bar_transform.translation = parent_transform.translation + Vec3::Y * health_bar.offset_y;
         }
     }
 }

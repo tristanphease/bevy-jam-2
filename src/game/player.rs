@@ -2,7 +2,7 @@ use bevy::prelude::*;
 
 use super::{
     components::{Health, Hitbox, Player},
-    health_bar::{generate_health_bar, HealthBarMaterial},
+    health_bar::{generate_health_bar, HealthBarMaterial, WithHealthBar},
 };
 
 const PLAYER_TEXTURE_SIZE: Vec2 = Vec2::new(106.0, 153.0);
@@ -42,7 +42,7 @@ pub fn setup_player(
         .insert(Player)
         .insert(Hitbox(PLAYER_SIZE))
         .insert(Health::new(PLAYER_HEALTH))
-        .add_child(health_bar);
+        .insert(WithHealthBar(health_bar));
 }
 
 pub fn check_player_death(mut commands: Commands, player_query: Query<&Health, With<Player>>) {

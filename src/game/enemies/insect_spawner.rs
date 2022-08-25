@@ -1,6 +1,7 @@
 use bevy::prelude::*;
+use rand::Rng;
 
-use crate::game::{health_bar::{HealthBarMaterial, generate_health_bar}, components::{Hitbox, Health, Spawner}};
+use crate::game::{health_bar::{HealthBarMaterial, generate_health_bar, WithHealthBar}, components::{Hitbox, Health, Spawner}};
 
 use super::insect::{spawn_insect, Insect};
 
@@ -34,7 +35,8 @@ pub fn create_insect_spawner(
             ..default()
         },
         texture_atlas: texture_atlas_handle,
-        transform: Transform::from_translation(Vec3::new(pos.x, pos.y, 0.0)),
+        transform: Transform::from_translation(Vec3::new(pos.x, pos.y, 0.0))
+            .with_rotation(Quat::from_rotation_z(rand::thread_rng().gen::<f32>())),
         ..default()
     })
     .insert(Hitbox(INSECT_SPAWNER_SIZE))
@@ -43,7 +45,7 @@ pub fn create_insect_spawner(
     .insert(Spawner {
         timer: Timer::from_seconds(10.0, true),
     })
-    .add_child(health_bar);
+    .insert(WithHealthBar(health_bar));
 }
 
 pub fn update_insect_spawners(

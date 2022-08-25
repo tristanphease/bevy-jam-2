@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::game::{components::{Hitbox, Health}, health_bar::{generate_health_bar, HealthBarMaterial}};
+use crate::game::{components::{Hitbox, Health}, health_bar::{generate_health_bar, HealthBarMaterial, WithHealthBar}};
 
 const INSECT_IMAGE_PATH: &str = "images/insect.png";
 const INSECT_TEXTURE_SIZE: Vec2 = Vec2::new(336.0, 442.0);
@@ -37,5 +37,5 @@ pub fn spawn_insect(
     .insert(Hitbox(INSECT_SIZE))
     .insert(Health::new(INSECT_HEALTH))
     .insert(Insect)
-    .add_child(health_bar);
+    .insert(WithHealthBar(health_bar));
 }
