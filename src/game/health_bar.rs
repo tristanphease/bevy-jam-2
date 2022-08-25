@@ -182,13 +182,6 @@ pub struct HealthBarMaterial {
 }
 
 impl HealthBarMaterial {
-    pub fn new(amount: f32) -> Self {
-        Self {
-            amount,
-            width: BAR_WIDTH as f32,
-        }
-    }
-
     pub fn set_amount(&mut self, amount: f32) {
         self.amount = amount;
     }

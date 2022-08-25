@@ -22,8 +22,6 @@ pub fn start_insect_wave(
             f32::sin(i as f32 / INSECT_SPAWNER_NUM as f32 * 2.0 * PI) * INSECT_SPAWNER_RAD + position.y,
         );
 
-        println!("spawner pos: {spawner_pos}");
-
         create_insect_spawner(
             commands,
             asset_server,

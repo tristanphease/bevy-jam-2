@@ -9,6 +9,7 @@ const INSECT_SPAWNER_IMAGE_PATH: &str = "images/insect_spawner.png";
 const INSECT_SPAWNER_TEXTURE_SIZE: Vec2 = Vec2::new(224.0, 257.0);
 const INSECT_SPAWNER_SIZE: Vec2 = Vec2::new(200.0, 220.0);
 const INSECT_SPAWNER_HEALTH: f32 = 100.0;
+const SPAWNER_RANDOM_OFFSET: f32 = 100.0;
 
 const MAX_INSECT_NUM: usize = 10;
 
@@ -62,8 +63,9 @@ pub fn update_insect_spawners(
         spawner.timer.tick(time.delta());
 
         if spawner.timer.finished() && insect_query.iter().count() < MAX_INSECT_NUM {
-            let x = trans.translation.x;
-            let y = trans.translation.y;
+            let mut rng = rand::thread_rng();
+            let x = trans.translation.x + (rng.gen::<f32>() - 0.5) * SPAWNER_RANDOM_OFFSET;
+            let y = trans.translation.y + (rng.gen::<f32>() - 0.5) * SPAWNER_RANDOM_OFFSET;
             spawn_insect(&mut commands, &mut asset_server, &mut texture_atlases, &mut meshes, &mut materials, x, y);
         }
     }

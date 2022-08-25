@@ -81,9 +81,6 @@ pub fn check_wave_start(
                     }
                 );
 
-                dbg!(WAVE_SPOTS, player_pos, wave_pos);
-                println!("started wave {wave_index}");
-
                 break;
             }
         }

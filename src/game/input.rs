@@ -30,8 +30,8 @@ pub fn keyboard_input(
     //clamp within game border
     //player_trans.translation.x = f32::clamp(player_trans.translation.x, -(GAME_WIDTH as f32)/2.0, (GAME_WIDTH as f32)/2.0);
     //player_trans.translation.y = f32::clamp(player_trans.translation.y, -(GAME_HEIGHT as f32)/2.0, (GAME_HEIGHT as f32)/2.0);
-    player_trans.translation.x = f32::clamp(player_trans.translation.x, -(GAME_WIDTH as f32), (GAME_WIDTH as f32));
-    player_trans.translation.y = f32::clamp(player_trans.translation.y, -(GAME_HEIGHT as f32), (GAME_HEIGHT as f32));
+    player_trans.translation.x = f32::clamp(player_trans.translation.x, -(GAME_WIDTH as f32), GAME_WIDTH as f32);
+    player_trans.translation.y = f32::clamp(player_trans.translation.y, -(GAME_HEIGHT as f32), GAME_HEIGHT as f32);
 }
 
 pub fn mouse_input(

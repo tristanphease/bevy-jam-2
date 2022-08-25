@@ -5,7 +5,7 @@ use game::{
     health_bar::{HealthBarMaterial, update_health_bars, update_health_bar_positions},
     input::{keyboard_input, mouse_input},
     player::{check_player_death, setup_player},
-    shot::{setup_shots, shot_collide, update_shots}, enemies::insect_spawner::update_insect_spawners, health::check_entity_death, waves::waves::{check_wave_start, WaveInfo, StartWaveEvent, start_wave},
+    shot::{setup_shots, shot_collide, update_shots}, enemies::{insect_spawner::update_insect_spawners, insect_ai::move_insects}, health::check_entity_death, waves::waves::{check_wave_start, WaveInfo, StartWaveEvent, start_wave},
 };
 use start_menu::{button_system, close_menu, setup_menu};
 
@@ -46,6 +46,7 @@ fn main() {
                 .with_system(check_player_death)
                 .with_system(update_health_bars)
                 .with_system(update_health_bar_positions)
+                .with_system(move_insects)
                 .with_system(update_insect_spawners)
                 .with_system(check_entity_death)
                 .with_system(check_wave_start)
