@@ -25,7 +25,9 @@ pub fn spawn_insect(
     let texture_atlas = TextureAtlas::from_grid(texture_handler, INSECT_TEXTURE_SIZE, 1, 1);
     let texture_atlas_handle = texture_atlases.add(texture_atlas);
 
-    let health_bar = generate_health_bar(commands, meshes, materials, INSECT_SIZE.y/2.0);
+    let insect_pos = Vec3::new(x, y, 0.0);
+
+    let health_bar = generate_health_bar(commands, meshes, materials, insect_pos, INSECT_SIZE.y/2.0);
 
     commands.spawn_bundle(SpriteSheetBundle {
         sprite: TextureAtlasSprite {
@@ -33,7 +35,7 @@ pub fn spawn_insect(
             ..default()
         },
         texture_atlas: texture_atlas_handle,
-        transform: Transform::from_translation(Vec3::new(x, y, 0.0)),
+        transform: Transform::from_translation(insect_pos),
         ..default()
     })
     .insert(Hitbox(INSECT_SIZE))

@@ -28,7 +28,9 @@ pub fn create_insect_spawner(
     let texture_atlas = TextureAtlas::from_grid(texture_handler, INSECT_SPAWNER_TEXTURE_SIZE, 1, 1);
     let texture_atlas_handle = texture_atlases.add(texture_atlas);
 
-    let health_bar = generate_health_bar(commands, meshes, materials, INSECT_SPAWNER_SIZE.y/2.0);
+    let spawner_pos = Vec3::new(pos.x, pos.y, 0.0);
+
+    let health_bar = generate_health_bar(commands, meshes, materials, spawner_pos, INSECT_SPAWNER_SIZE.y/2.0);
 
     commands.spawn_bundle(SpriteSheetBundle {
         sprite: TextureAtlasSprite {
@@ -36,7 +38,7 @@ pub fn create_insect_spawner(
             ..default()
         },
         texture_atlas: texture_atlas_handle,
-        transform: Transform::from_translation(Vec3::new(pos.x, pos.y, 0.0))
+        transform: Transform::from_translation(spawner_pos)
             .with_rotation(Quat::from_rotation_z(rand::thread_rng().gen::<f32>())),
         ..default()
     })

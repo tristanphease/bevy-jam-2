@@ -23,7 +23,13 @@ pub fn setup_player(
     let texture_atlas = TextureAtlas::from_grid(texture_handler, PLAYER_TEXTURE_SIZE, 1, 1);
     let texture_atlas_handle = texture_atlases.add(texture_atlas);
 
-    let health_bar = generate_health_bar(&mut commands, &mut meshes, &mut materials, PLAYER_SIZE.y/2.0);
+    let player_pos = Vec3::new(
+        PLAYER_START_POS.x,
+        PLAYER_START_POS.y,
+        3.0,
+    );
+
+    let health_bar = generate_health_bar(&mut commands, &mut meshes, &mut materials, player_pos, PLAYER_SIZE.y/2.0);
 
     commands
         .spawn_bundle(SpriteSheetBundle {
@@ -31,11 +37,7 @@ pub fn setup_player(
                 custom_size: Some(PLAYER_SIZE),
                 ..default()
             },
-            transform: Transform::from_translation(Vec3::new(
-                PLAYER_START_POS.x,
-                PLAYER_START_POS.y,
-                3.0,
-            )),
+            transform: Transform::from_translation(player_pos),
             texture_atlas: texture_atlas_handle,
             ..default()
         })

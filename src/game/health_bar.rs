@@ -20,6 +20,7 @@ pub fn generate_health_bar(
     commands: &mut Commands, 
     meshes: &mut ResMut<Assets<Mesh>>, 
     materials: &mut ResMut<Assets<HealthBarMaterial>>,
+    position: Vec3,
     offset_y: f32,
 ) -> Entity {
     let (mesh_handle, material_handle) = get_health_bar_handles(meshes, materials);
@@ -27,7 +28,7 @@ pub fn generate_health_bar(
         .spawn_bundle(MaterialMesh2dBundle {
             mesh: Mesh2dHandle(mesh_handle),
             material: material_handle,
-            transform: Transform::from_xyz(0.0, offset_y, 1.0).with_scale(Vec3::new(10.0, 10.0, 1.0)),
+            transform: Transform::from_translation(position + Vec3::Y * offset_y).with_scale(Vec3::new(10.0, 10.0, 1.0)),
             ..default()
         })
         .insert(HealthBar { offset_y })
