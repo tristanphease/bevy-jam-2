@@ -35,9 +35,9 @@ pub fn move_insects(
 }
 
 //ai variables
-const RAND_POS_DISTANCE: f32 = 500.0;
-const RAND_POS_VARIANCE: f32 = 200.0;
-const INSECT_DIST_GAIN: f32 = 300.0;
+const RAND_POS_DISTANCE: f32 = 1000.0;
+const RAND_POS_VARIANCE: f32 = 400.0;
+const INSECT_DIST_GAIN: f32 = 500.0;
 
 fn pick_position(
     insect_pos: Vec2,
@@ -48,8 +48,8 @@ fn pick_position(
         //pick random point around player
 
         Vec2::new(
-            player_pos.x + rng.gen::<f32>() * RAND_POS_VARIANCE,
-            player_pos.y + rng.gen::<f32>() * RAND_POS_VARIANCE,
+            player_pos.x + (rng.gen::<f32>() - 0.5) * RAND_POS_VARIANCE,
+            player_pos.y + (rng.gen::<f32>() - 0.5) * RAND_POS_VARIANCE,
         )
     } else {
         //pick point a certain distance from the insect towards the player
