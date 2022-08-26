@@ -1,7 +1,9 @@
 use bevy::prelude::*;
 
+use self::player_shot::ShotType;
+
 use super::{
-    components::{Health, Hitbox, Player, ShotSpawnOffset},
+    components::{Health, Hitbox, Player, ShotSpawnOffset, ShotCooldown},
     health_bar::{generate_health_bar, HealthBarMaterial, WithHealthBar},
 };
 
@@ -9,12 +11,25 @@ const PLAYER_TEXTURE_SIZE: Vec2 = Vec2::new(106.0, 153.0);
 const PLAYER_SIZE: Vec2 = Vec2::new(100.0, 150.0);
 const PLAYER_HITBOX: Vec2 = Vec2::new(80.0, 110.0);
 const PLAYER_START_POS: Vec2 = Vec2::new(200.0, 0.0);
-
 const PLAYER_HEALTH: f32 = 100.0;
-
 const PLAYER_SHOT_OFFSET: Vec2 = Vec2::new(-30.0, 60.0);
+const PLAYER_SHOT_COOLDOWN: f32 = 0.5;
 
 pub mod player_death;
+pub mod player_shot;
+pub mod basic_shot;
+
+pub struct ShotSelected {
+    pub shot_type: ShotType,
+}
+
+impl Default for ShotSelected {
+    fn default() -> Self {
+        Self {
+            shot_type: ShotType::Basic,
+        }
+    }
+}
 
 pub fn setup_player(
     mut commands: Commands,
@@ -49,6 +64,6 @@ pub fn setup_player(
         .insert(Hitbox(PLAYER_HITBOX))
         .insert(Health::new(PLAYER_HEALTH))
         .insert(WithHealthBar(health_bar))
-        .insert(ShotSpawnOffset(PLAYER_SHOT_OFFSET));
+        .insert(ShotSpawnOffset(PLAYER_SHOT_OFFSET))
+        .insert(ShotCooldown { timer: Timer::from_seconds(PLAYER_SHOT_COOLDOWN, true)});
 }
-

@@ -2,7 +2,7 @@ use std::time::Duration;
 
 use bevy::prelude::*;
 
-use crate::game::{components::{Hitbox, Health, ShotType, CollidesShot, DamageCooldown, DamagesPlayer}, health_bar::{generate_health_bar, HealthBarMaterial, WithHealthBar}};
+use crate::game::{components::{Hitbox, Health, DamageCooldown, Damage, CollidesPlayer, CollidesEnemy}, health_bar::{generate_health_bar, HealthBarMaterial, WithHealthBar}};
 
 use super::insect_ai::InsectAI;
 
@@ -44,16 +44,17 @@ pub fn spawn_insect(
     })
     .insert(Hitbox(INSECT_SIZE))
     .insert(Health::new(INSECT_HEALTH))
-    .insert(CollidesShot(ShotType::Enemy))
+    .insert(CollidesEnemy)
+    .insert(CollidesPlayer)
     .insert(Insect)
     .insert(InsectAI { target_position: Vec2::new(x, y) }) //dummy position, should get overwritten
     .insert(DamageCooldown { 
-        cooldown_timer: Timer::new(
+        timer: Timer::new(
             Duration::from_secs_f32(DAMAGE_COOLDOWN), 
             false
         ),
     })
-    .insert(DamagesPlayer { damage: INSECT_DAMAGE })
+    .insert(Damage(INSECT_DAMAGE))
     .insert(WithHealthBar(health_bar));
 }
 

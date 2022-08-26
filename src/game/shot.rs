@@ -1,21 +1,12 @@
-use std::time::Duration;
-
-use super::components::{CollidesShot, Direction, Health, Hitbox, ShotType};
+use super::{components::{Health, Hitbox, Damage, CollidesEnemy}, player::basic_shot::ShotSpeed};
 use bevy::{
     prelude::{shape::Circle, *},
-    sprite::{collide_aabb, MaterialMesh2dBundle, Mesh2dHandle},
+    sprite::collide_aabb,
 };
-
-//these can be changed to values on the shot in the future
-const SHOT_SPEED: f32 = 500.0;
-const SHOT_RADIUS: f32 = 20.0;
-const SHOT_DAMAGE: f32 = 2.0;
-const SHOT_TIME_LENGTH: f32 = 10.0;
 
 #[derive(Component)]
 pub struct Shot {
-    timer: Timer,
-    shot_type: ShotType,
+    pub timer: Timer,
 }
 
 #[derive(Default)]
@@ -29,7 +20,7 @@ pub fn setup_shots(
     mut materials: ResMut<Assets<ColorMaterial>>,
     mut commands: Commands,
 ) {
-    let mesh_handle = meshes.add(Mesh::from(Circle::new(SHOT_RADIUS)));
+    let mesh_handle = meshes.add(Mesh::from(Circle::new(1.0)));
     let material_handle = materials.add(ColorMaterial::from(Color::RED));
 
     commands.insert_resource(ShotResource {
@@ -38,44 +29,14 @@ pub fn setup_shots(
     });
 }
 
-pub fn create_shot(
-    commands: &mut Commands,
-    position: Vec2,
-    angle: f32,
-    mesh: Handle<Mesh>,
-    material: Handle<ColorMaterial>,
-) {
-    commands
-        .spawn()
-        .insert_bundle(MaterialMesh2dBundle {
-            transform: Transform {
-                translation: Vec3::new(
-                    position.x,
-                    position.y,
-                    1.0
-                ),
-                ..default()
-            },
-            mesh: Mesh2dHandle(mesh),
-            material,
-            ..default()
-        })
-        .insert(Shot {
-            timer: Timer::new(Duration::from_secs_f32(SHOT_TIME_LENGTH), false),
-            shot_type: ShotType::Enemy,
-        })
-        .insert(Direction(angle))
-        .insert(Hitbox(Vec2::new(SHOT_RADIUS * 2.0, SHOT_RADIUS * 2.0)));
-}
-
 pub fn update_shots(
     mut commands: Commands,
-    mut shot_query: Query<(&mut Transform, &Direction, &mut Shot, Entity)>,
+    mut shot_query: Query<(&mut Transform, &mut Shot, &ShotSpeed, Entity)>,
     time: Res<Time>,
 ) {
-    for (mut trans, dir, mut shot, entity) in shot_query.iter_mut() {
-        trans.translation.x += SHOT_SPEED * f32::cos(dir.0) * time.delta_seconds();
-        trans.translation.y += SHOT_SPEED * f32::sin(dir.0) * time.delta_seconds();
+    for (mut trans, mut shot, shot_speed, entity) in shot_query.iter_mut() {
+        let forward_amount = trans.local_x().normalize() * shot_speed.0 * time.delta_seconds();
+        trans.translation += forward_amount;
         shot.timer.tick(time.delta());
 
         if shot.timer.finished() {
@@ -84,17 +45,17 @@ pub fn update_shots(
     }
 }
 
-pub fn shot_collide(
+//handles shots doing damage
+pub fn collides_enemy(
     mut commands: Commands,
-    shot_query: Query<(&Transform, &Hitbox, Entity, &Shot), With<Shot>>,
-    mut collides_shot_query: Query<(&Transform, &Hitbox, &mut Health, &CollidesShot)>,
+    shot_query: Query<(&Transform, &Hitbox, Entity, &Damage), (With<Shot>, With<CollidesEnemy>)>,
+    mut collides_shot_query: Query<(&Transform, &Hitbox, &mut Health), (Without<Shot>, With<CollidesEnemy>)>,
 ) {
-    for (shot_trans, shot_hitbox, shot_entity, shot) in shot_query.iter() {
-        for (object_trans, object_hitbox, mut object_health, object_collides) in
+    for (shot_trans, shot_hitbox, shot_entity, damage) in shot_query.iter() {
+        for (object_trans, object_hitbox, mut object_health) in
             collides_shot_query.iter_mut()
         {
-            if shot.shot_type == object_collides.0
-                && collide_aabb::collide(
+            if collide_aabb::collide(
                     shot_trans.translation,
                     shot_hitbox.0,
                     object_trans.translation,
@@ -103,7 +64,7 @@ pub fn shot_collide(
                 .is_some()
             {
                 commands.entity(shot_entity).despawn();
-                object_health.current -= SHOT_DAMAGE;
+                object_health.current -= damage.0;
 
                 break;
             }

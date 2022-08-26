@@ -1,8 +1,8 @@
-use bevy::{prelude::*, math::Vec3Swizzles};
+use bevy::prelude::*;
 
 use super::{
-    components::{Player, ShotSpawnOffset},
-    shot::{create_shot, ShotResource}, game::{GAME_WIDTH, GAME_HEIGHT},
+    components::Player,
+    game::{GAME_WIDTH, GAME_HEIGHT},
 };
 
 const SPEED: f32 = 200.0;
@@ -34,32 +34,23 @@ pub fn keyboard_input(
     player_trans.translation.y = f32::clamp(player_trans.translation.y, -(GAME_HEIGHT as f32), GAME_HEIGHT as f32);
 }
 
+pub struct ClickEvent {
+    pub position: Vec2,
+}
+
 pub fn mouse_input(
-    mut commands: Commands,
     buttons: Res<Input<MouseButton>>,
     windows: Res<Windows>,
-    player_query: Query<(&Transform, &ShotSpawnOffset), With<Player>>,
-    shot_res: Res<ShotResource>,
+    mut click_event_writer: EventWriter<ClickEvent>,
 ) {
     let window = windows.get_primary().unwrap();
 
     if let Some(mouse_pos) = window.cursor_position() {
         if buttons.just_pressed(MouseButton::Left) {
 
-            let (player_trans, shot_offset) = player_query.get_single().unwrap();
-
-            let x_diff = mouse_pos.x - window.width() / 2.0 - shot_offset.0.x;
-            let y_diff = mouse_pos.y - window.height() / 2.0 - shot_offset.0.y;
-
-            let angle = f32::atan2(y_diff, x_diff);
-            
-            create_shot(
-                &mut commands,
-                player_trans.translation.xy() + shot_offset.0,
-                angle,
-                shot_res.mesh.clone(),
-                shot_res.material.clone(),
-            );
+            click_event_writer.send(ClickEvent {
+                position: mouse_pos,
+            });
         }
     }
 }

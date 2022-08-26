@@ -4,12 +4,11 @@ use crate::game::{components::Player, game::{GAME_WIDTH, GAME_HEIGHT}, health_ba
 
 use super::insect_wave::start_insect_wave;
 
-
-const WAVE_SPOT_NUM: usize = 8;
-const WAVE_SPOTS: [Vec2; WAVE_SPOT_NUM] = get_wave_spots();
+pub const WAVE_NUM: usize = 8;
+const WAVE_SPOTS: [Vec2; WAVE_NUM] = get_wave_spots();
 const PLAYER_DISTANCE_WAVE_START: f32 = 500.0;
 
-const WAVES: [WaveType; WAVE_SPOT_NUM] = [WaveType::Insects; WAVE_SPOT_NUM];
+const WAVES: [WaveType; WAVE_NUM] = [WaveType::Insects; WAVE_NUM];
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum WaveType {
@@ -21,9 +20,20 @@ pub struct StartWaveEvent {
     wave_position: Vec2,
 }
 
+pub struct EndWaveEvent {
+    wave_type: WaveType,
+    waves_complete: usize,
+}
+
+impl EndWaveEvent {
+    pub fn get_waves_complete(&self) -> usize {
+        self.waves_complete
+    }
+}
+
 pub struct WaveInfo {
     current_wave: Option<usize>,
-    waves_completed: [bool; WAVE_SPOT_NUM],
+    waves_completed: [bool; WAVE_NUM],
 }
 
 impl WaveInfo {
@@ -61,7 +71,7 @@ impl Default for WaveInfo {
     fn default() -> Self {
         Self {
             current_wave: None,
-            waves_completed: [false; WAVE_SPOT_NUM],
+            waves_completed: [false; WAVE_NUM],
         }
     }
 }
@@ -112,13 +122,13 @@ pub fn start_wave(
 }
 
 const fn get_wave_spots() -> [Vec2; 8] {
-    let mut spots = [Vec2::new(0.0, 0.0); WAVE_SPOT_NUM];
+    let mut spots = [Vec2::new(0.0, 0.0); WAVE_NUM];
 
     let mut index = 0;
     let mut x = -1;
     let mut y = -1;
     //can't use for loop in const fn :(
-    while index < WAVE_SPOT_NUM {
+    while index < WAVE_NUM {
         if !(x == 0 && y == 0) {
             //also can't do floating point arithmetic, this is fine though
             spots[index] = Vec2::new(((x * GAME_WIDTH as i32) / 2) as f32, ((y * GAME_HEIGHT as i32) / 2) as f32);

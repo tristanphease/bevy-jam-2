@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use rand::Rng;
 
-use crate::game::{health_bar::{HealthBarMaterial, generate_health_bar, WithHealthBar}, components::{Hitbox, Health, Spawner, CollidesShot, ShotType}};
+use crate::game::{health_bar::{HealthBarMaterial, generate_health_bar, WithHealthBar}, components::{Hitbox, Health, Spawner, CollidesEnemy}};
 
 use super::insect::{spawn_insect, Insect};
 
@@ -44,7 +44,7 @@ pub fn create_insect_spawner(
     })
     .insert(Hitbox(INSECT_SPAWNER_SIZE))
     .insert(Health::new(INSECT_SPAWNER_HEALTH))
-    .insert(CollidesShot(ShotType::Enemy))
+    .insert(CollidesEnemy)
     .insert(InsectSpawner)
     .insert(Spawner {
         timer: Timer::from_seconds(10.0, true),

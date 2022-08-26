@@ -6,21 +6,12 @@ pub struct Player;
 #[derive(Component)]
 pub struct Hitbox(pub Vec2);
 
-/// Blocks player from moving on it
+
 #[derive(Component)]
 pub struct CollidesPlayer;
 
 #[derive(Component)]
-pub struct Direction(pub f32);
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum ShotType {
-    //Player,
-    Enemy,
-}
-
-#[derive(Component)]
-pub struct CollidesShot(pub ShotType);
+pub struct CollidesEnemy;
 
 #[derive(Component)]
 pub struct Health {
@@ -47,10 +38,13 @@ pub struct ShotSpawnOffset(pub Vec2);
 
 #[derive(Component)]
 pub struct DamageCooldown {
-    pub cooldown_timer: Timer,
+    pub timer: Timer,
 }
 
 #[derive(Component)]
-pub struct DamagesPlayer {
-    pub damage: f32,
+pub struct Damage(pub f32);
+
+#[derive(Component)]
+pub struct ShotCooldown {
+    pub timer: Timer,
 }
