@@ -15,7 +15,7 @@ pub struct Direction(pub f32);
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ShotType {
-    Player,
+    //Player,
     Enemy,
 }
 

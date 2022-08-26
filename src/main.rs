@@ -4,7 +4,7 @@ use game::{
     game::setup_world,
     health_bar::{HealthBarMaterial, update_health_bars, update_health_bar_positions},
     input::{keyboard_input, mouse_input},
-    player::{check_player_death, setup_player},
+    player::{setup_player, player_death::check_player_death},
     shot::{setup_shots, shot_collide, update_shots}, enemies::{insect_spawner::update_insect_spawners, insect_ai::move_insects, damage_player::{damage_player, update_damage_cooldowns}}, health::check_entity_death, waves::{waves::{check_wave_start, WaveInfo, StartWaveEvent, start_wave}, insect_wave::check_insect_wave_end},
 };
 use start_menu::{button_system, close_menu, setup_menu};

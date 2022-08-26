@@ -14,6 +14,8 @@ const PLAYER_HEALTH: f32 = 100.0;
 
 const PLAYER_SHOT_OFFSET: Vec2 = Vec2::new(-30.0, 60.0);
 
+pub mod player_death;
+
 pub fn setup_player(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
@@ -50,11 +52,3 @@ pub fn setup_player(
         .insert(ShotSpawnOffset(PLAYER_SHOT_OFFSET));
 }
 
-pub fn check_player_death(mut commands: Commands, player_query: Query<&Health, With<Player>>) {
-    let player_health = player_query.single().current;
-
-    if player_health <= 0.0 {
-        //dead, change state here
-        println!("player dead");
-    }
-}
