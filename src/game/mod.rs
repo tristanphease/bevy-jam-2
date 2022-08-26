@@ -9,3 +9,4 @@ pub mod shot;
 pub mod util;
 pub mod enemies;
 pub mod waves;
+pub mod animate;

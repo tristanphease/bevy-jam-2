@@ -2,7 +2,7 @@ use std::time::Duration;
 
 use bevy::prelude::*;
 
-use crate::game::{components::{Hitbox, Health, DamageCooldown, Damage, CollidesPlayer, CollidesEnemy}, health_bar::{generate_health_bar, HealthBarMaterial, WithHealthBar}};
+use crate::game::{components::{Hitbox, Health, DamageCooldown, Damage, CollidesPlayer, CollidesEnemy, AnimationTimer}, health_bar::{generate_health_bar, HealthBarMaterial, WithHealthBar}};
 
 use super::insect_ai::InsectAI;
 
@@ -26,7 +26,7 @@ pub fn spawn_insect(
     y: f32,
 ) {
     let texture_handler = asset_server.load(INSECT_IMAGE_PATH);
-    let texture_atlas = TextureAtlas::from_grid(texture_handler, INSECT_TEXTURE_SIZE, 1, 1);
+    let texture_atlas = TextureAtlas::from_grid(texture_handler, INSECT_TEXTURE_SIZE, 4, 1);
     let texture_atlas_handle = texture_atlases.add(texture_atlas);
 
     let insect_pos = Vec3::new(x, y, 0.0);
@@ -42,6 +42,7 @@ pub fn spawn_insect(
         transform: Transform::from_translation(insect_pos),
         ..default()
     })
+    .insert(AnimationTimer(Timer::from_seconds(0.1, true)))
     .insert(Hitbox(INSECT_SIZE))
     .insert(Health::new(INSECT_HEALTH))
     .insert(CollidesEnemy)

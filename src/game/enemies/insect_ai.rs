@@ -57,8 +57,8 @@ fn pick_position(
         let angle = f32::atan2(player_pos.y - insect_pos.y, player_pos.x - insect_pos.x);
 
         Vec2::new(
-            f32::cos(angle) * INSECT_DIST_GAIN,
-            f32::sin(angle) * INSECT_DIST_GAIN,
+            f32::cos(angle) * INSECT_DIST_GAIN + insect_pos.x,
+            f32::sin(angle) * INSECT_DIST_GAIN + insect_pos.y,
         )
     }
 }
