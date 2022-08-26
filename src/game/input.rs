@@ -52,9 +52,7 @@ pub fn mouse_input(
             let y_diff = mouse_pos.y - window.height() / 2.0 - shot_offset.0.y;
 
             let angle = f32::atan2(y_diff, x_diff);
-
             
-
             create_shot(
                 &mut commands,
                 player_trans.translation.xy() + shot_offset.0,

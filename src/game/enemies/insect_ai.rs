@@ -11,7 +11,7 @@ pub struct InsectAI {
 }
 
 const INSECT_DISTANCE_NEW_POS: f32 = 40.0;
-const INSECT_SPEED: f32 = 40.0;
+const INSECT_SPEED: f32 = 70.0;
 
 pub fn move_insects(
     mut insect_query: Query<(&mut Transform, &mut InsectAI), With<Insect>>,

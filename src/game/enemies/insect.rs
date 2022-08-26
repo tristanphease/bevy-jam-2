@@ -1,6 +1,8 @@
+use std::time::Duration;
+
 use bevy::prelude::*;
 
-use crate::game::{components::{Hitbox, Health, ShotType, CollidesShot}, health_bar::{generate_health_bar, HealthBarMaterial, WithHealthBar}};
+use crate::game::{components::{Hitbox, Health, ShotType, CollidesShot, DamageCooldown, DamagesPlayer}, health_bar::{generate_health_bar, HealthBarMaterial, WithHealthBar}};
 
 use super::insect_ai::InsectAI;
 
@@ -8,6 +10,8 @@ const INSECT_IMAGE_PATH: &str = "images/insect.png";
 const INSECT_TEXTURE_SIZE: Vec2 = Vec2::new(336.0, 442.0);
 const INSECT_SIZE: Vec2 = Vec2::new(100.0, 140.0);
 const INSECT_HEALTH: f32 = 10.0;
+const DAMAGE_COOLDOWN: f32 = 2.0;
+const INSECT_DAMAGE: f32 = 3.0;
 
 #[derive(Component)]
 pub struct Insect;
@@ -43,5 +47,14 @@ pub fn spawn_insect(
     .insert(CollidesShot(ShotType::Enemy))
     .insert(Insect)
     .insert(InsectAI { target_position: Vec2::new(x, y) }) //dummy position, should get overwritten
+    .insert(DamageCooldown { 
+        cooldown_timer: Timer::new(
+            Duration::from_secs_f32(DAMAGE_COOLDOWN), 
+            false
+        ),
+    })
+    .insert(DamagesPlayer { damage: INSECT_DAMAGE })
     .insert(WithHealthBar(health_bar));
 }
+
+

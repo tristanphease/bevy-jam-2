@@ -7,7 +7,7 @@ use super::{
 
 const PLAYER_TEXTURE_SIZE: Vec2 = Vec2::new(106.0, 153.0);
 const PLAYER_SIZE: Vec2 = Vec2::new(100.0, 150.0);
-
+const PLAYER_HITBOX: Vec2 = Vec2::new(80.0, 110.0);
 const PLAYER_START_POS: Vec2 = Vec2::new(200.0, 0.0);
 
 const PLAYER_HEALTH: f32 = 100.0;
@@ -44,7 +44,7 @@ pub fn setup_player(
             ..default()
         })
         .insert(Player)
-        .insert(Hitbox(PLAYER_SIZE))
+        .insert(Hitbox(PLAYER_HITBOX))
         .insert(Health::new(PLAYER_HEALTH))
         .insert(WithHealthBar(health_bar))
         .insert(ShotSpawnOffset(PLAYER_SHOT_OFFSET));

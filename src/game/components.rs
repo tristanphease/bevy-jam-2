@@ -44,3 +44,13 @@ pub struct Spawner {
 
 #[derive(Component)]
 pub struct ShotSpawnOffset(pub Vec2);
+
+#[derive(Component)]
+pub struct DamageCooldown {
+    pub cooldown_timer: Timer,
+}
+
+#[derive(Component)]
+pub struct DamagesPlayer {
+    pub damage: f32,
+}

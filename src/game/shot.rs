@@ -3,7 +3,7 @@ use std::time::Duration;
 use super::components::{CollidesShot, Direction, Health, Hitbox, ShotType};
 use bevy::{
     prelude::{shape::Circle, *},
-    sprite::{collide_aabb::collide, MaterialMesh2dBundle, Mesh2dHandle},
+    sprite::{collide_aabb, MaterialMesh2dBundle, Mesh2dHandle},
 };
 
 //these can be changed to values on the shot in the future
@@ -94,7 +94,7 @@ pub fn shot_collide(
             collides_shot_query.iter_mut()
         {
             if shot.shot_type == object_collides.0
-                && collide(
+                && collide_aabb::collide(
                     shot_trans.translation,
                     shot_hitbox.0,
                     object_trans.translation,

@@ -11,8 +11,8 @@ const PLAYER_DISTANCE_WAVE_START: f32 = 500.0;
 
 const WAVES: [WaveType; WAVE_SPOT_NUM] = [WaveType::Insects; WAVE_SPOT_NUM];
 
-#[derive(Debug, Clone, Copy)]
-enum WaveType {
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum WaveType {
     Insects,
 }
 
@@ -47,6 +47,13 @@ impl WaveInfo {
 
     pub fn completed_wave(&self, index: usize) -> bool {
         self.waves_completed[index]
+    }
+
+    pub fn wave_type_happening(&self, wave_type: WaveType) -> bool {
+        if let Some(wave_index) = self.current_wave {
+            return WAVES[wave_index] == wave_type;
+        }
+        false
     }
 }
 

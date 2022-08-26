@@ -2,7 +2,9 @@ use std::f32::consts::PI;
 
 use bevy::prelude::*;
 
-use crate::game::{health_bar::HealthBarMaterial, enemies::insect_spawner::create_insect_spawner};
+use crate::game::{health_bar::HealthBarMaterial, enemies::insect_spawner::{create_insect_spawner, InsectSpawner}};
+
+use super::waves::{WaveInfo, WaveType};
 
 const INSECT_SPAWNER_NUM: usize = 3;
 const INSECT_SPAWNER_RAD: f32 = 300.0;
@@ -30,5 +32,15 @@ pub fn start_insect_wave(
             materials,
             spawner_pos,
         );
+    }
+}
+
+pub fn check_insect_wave_end(
+    mut wave_info: ResMut<WaveInfo>,
+    insect_spawner_query: Query<(), With<InsectSpawner>>,
+) {
+    if wave_info.wave_type_happening(WaveType::Insects) && insect_spawner_query.is_empty() {
+        //spawn end win
+        wave_info.end_wave();
     }
 }
