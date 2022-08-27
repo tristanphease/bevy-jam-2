@@ -2,9 +2,7 @@ use std::f32::consts::PI;
 
 use bevy::prelude::*;
 
-use crate::game::{health_bar::HealthBarMaterial, enemies::insect_spawner::{create_insect_spawner, InsectSpawner}};
-
-use super::waves::{WaveInfo, WaveType};
+use crate::game::{health_bar::HealthBarMaterial, enemies::insect_spawner::create_insect_spawner};
 
 pub const INSECT_SPAWNER_NUM: usize = 3;
 const INSECT_SPAWNER_RAD: f32 = 300.0;

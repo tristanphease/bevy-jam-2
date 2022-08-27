@@ -51,6 +51,7 @@ pub struct AnimationTimer(pub Timer);
 #[derive(Debug, Clone, Copy)]
 pub enum ItemDropType {
     GoldenInsectWings,
+    DiggerEyes,
 }
 
 #[derive(Component)]

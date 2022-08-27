@@ -8,6 +8,9 @@ const CAULDRON_SIZE: Vec2 = Vec2::new(350.0, 300.0);
 pub const GAME_WIDTH: usize = 2_000;
 pub const GAME_HEIGHT: usize = 2_000;
 
+#[derive(Component)]
+pub struct Cauldron;
+
 /// Sets up objects in world
 pub fn setup_world(
     mut commands: Commands,
@@ -26,7 +29,9 @@ pub fn setup_world(
                 ..default()
             },
             texture_atlas: texture_atlas_handle,
+            transform: Transform::from_xyz(0.0, 0.0, 0.0),
             ..default()
         })
-        .insert(Hitbox(CAULDRON_SIZE));
+        .insert(Hitbox(CAULDRON_SIZE))
+        .insert(Cauldron);
 }

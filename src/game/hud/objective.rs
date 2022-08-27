@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::game::waves::waves::{WaveType, WaveInfo};
+use crate::game::waves::waves::{WaveType, WaveInfo, EndWaveEvent};
 
 use super::CALIBRI_FONT_PATH;
 
@@ -11,6 +11,9 @@ const BACKGROUND_COLOUR: Color = Color::BLACK;
 pub struct ObjectiveText {
     objective_num: usize,
 }
+
+#[derive(Component)]
+pub struct ObjectiveNode;
 
 pub fn create_objective_ui_start_wave(
     commands: &mut Commands,
@@ -37,6 +40,7 @@ pub fn create_objective_ui_start_wave(
         color: OBJECTIVE_BORDER_COLOUR.into(),
         ..default()
     })
+    .insert(ObjectiveNode)
     .with_children(|parent| {
 
         parent.spawn_bundle(NodeBundle {
@@ -87,4 +91,18 @@ pub fn update_objective_text(
         let progress = wave_info.get_progress();
         text.sections[0].value = format!("{0}/{1}", progress, objective.objective_num);
     }
+}
+
+//on deposit
+pub fn delete_objective_on_wave_end(
+    mut commands: Commands,
+    query: Query<Entity, With<ObjectiveNode>>,
+    mut end_wave_reader: EventReader<EndWaveEvent>,
+) {
+    for _ in end_wave_reader.iter() {
+        for entity in query.iter() {
+            commands.entity(entity).despawn_recursive();
+        }
+    }
+    
 }

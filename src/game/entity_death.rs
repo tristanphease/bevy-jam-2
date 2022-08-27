@@ -1,6 +1,6 @@
 use bevy::{prelude::*};
 
-use super::{components::{Health, Player, DropsItemOnDeath, ItemDropType}, health_bar::WithHealthBar, drops::golden_insect_wings::create_golden_insect_wings};
+use super::{components::{Health, Player, DropsItemOnDeath, ItemDropType}, health_bar::WithHealthBar, drops::{golden_insect_wings::create_golden_insect_wings, digger_eyes::create_digger_eyes}};
 
 pub fn check_entity_death(
     mut commands: Commands,
@@ -18,6 +18,11 @@ pub fn check_entity_death(
             if let Some(drops_item) = drops_item_option {
                 match drops_item.drop {
                     ItemDropType::GoldenInsectWings => create_golden_insect_wings(
+                        &mut commands, 
+                        &asset_server, 
+                        transform.translation
+                    ),
+                    ItemDropType::DiggerEyes => create_digger_eyes(
                         &mut commands, 
                         &asset_server, 
                         transform.translation
