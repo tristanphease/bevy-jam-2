@@ -44,11 +44,6 @@ pub struct DamageCooldown {
 #[derive(Component)]
 pub struct Damage(pub f32);
 
-#[derive(Component)]
-pub struct ShotCooldown {
-    pub timer: Timer,
-}
-
 
 #[derive(Component, Deref, DerefMut)]
 pub struct AnimationTimer(pub Timer);

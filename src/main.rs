@@ -4,8 +4,8 @@ use game::{
     game::setup_world,
     health_bar::{HealthBarMaterial, update_health_bars, update_health_bar_positions},
     input::{keyboard_input, mouse_input, ClickEvent},
-    player::{setup_player, player_death::check_player_death, ShotSelected, player_shot::create_shot_on_click},
-    shot::{collides_enemy, update_shots}, enemies::{insect_spawner::update_insect_spawners, insect_ai::move_insects, damage_player::{damage_player, update_damage_cooldowns}}, health::check_entity_death, waves::{waves::{check_wave_start, WaveInfo, StartWaveEvent, start_wave, EndWaveEvent}, insect_wave::check_insect_wave_end}, animate::animate_sprites,
+    player::{setup_player, player_death::check_player_death, PlayerShotsInfo, player_shot::{create_shot_on_click, update_player_shot_cooldowns}},
+    shot::{collides_enemy, update_shots}, enemies::{insect_spawner::update_insect_spawners, insect_ai::move_insects, damage_player::{damage_player, update_damage_cooldowns}}, health::check_entity_death, waves::{waves::{check_wave_start, WaveInfo, StartWaveEvent, start_wave, EndWaveEvent}, insect_wave::check_insect_wave_end}, animate::animate_sprites, hud::spell::update_ui_spell_borders,
 };
 use start_menu::{button_system, close_menu, setup_menu};
 
@@ -25,9 +25,10 @@ fn main() {
         .add_event::<StartWaveEvent>()
         .add_event::<EndWaveEvent>()
         .add_event::<ClickEvent>()
+        .insert_resource(ClearColor(Color::GREEN))
         .init_resource::<Time>()
         .init_resource::<WaveInfo>()
-        .init_resource::<ShotSelected>()
+        .init_resource::<PlayerShotsInfo>()
         .add_plugin(Material2dPlugin::<HealthBarMaterial>::default())
         .add_system_set(SystemSet::on_enter(GameState::StartMenu).with_system(setup_menu))
         .add_system_set(SystemSet::on_update(GameState::StartMenu).with_system(button_system))
@@ -58,6 +59,8 @@ fn main() {
                 .with_system(check_insect_wave_end)
                 .with_system(create_shot_on_click)
                 .with_system(animate_sprites)
+                .with_system(update_ui_spell_borders)
+                .with_system(update_player_shot_cooldowns)
         )
         .run();
 }
