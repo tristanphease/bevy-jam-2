@@ -5,7 +5,7 @@ use game::{
     health_bar::{HealthBarMaterial, update_health_bars, update_health_bar_positions},
     input::{keyboard_input, mouse_input, ClickEvent},
     player::{setup_player, player_death::check_player_death, PlayerShotsInfo, player_shot::{create_shot_on_click, update_player_shot_cooldowns}},
-    shot::{collides_enemy, update_shots}, enemies::{insect_spawner::update_insect_spawners, insect_ai::move_insects, damage_player::{damage_player, update_damage_cooldowns}}, entity_death::{check_entity_death}, waves::{waves::{check_wave_start, WaveInfo, StartWaveEvent, start_wave, EndWaveEvent}}, animate::animate_sprites, hud::spell::update_ui_spell_borders, drops::check_player_collect::check_player_drops,
+    shot::{collides_enemy, update_shots}, enemies::{insect_spawner::update_insect_spawners, insect_ai::move_insects, damage_player::{damage_player, update_damage_cooldowns}}, entity_death::{check_entity_death}, waves::{waves::{check_wave_start, WaveInfo, StartWaveEvent, start_wave, EndWaveEvent}}, animate::animate_sprites, hud::{spell::update_ui_spell_borders, objective::update_objective_text}, drops::check_player_collect::check_player_drops,
 };
 use start_menu::{button_system, close_menu, setup_menu};
 
@@ -61,6 +61,7 @@ fn main() {
                 .with_system(update_ui_spell_borders)
                 .with_system(update_player_shot_cooldowns)
                 .with_system(check_player_drops)
+                .with_system(update_objective_text)
         )
         .run();
 }

@@ -1,10 +1,11 @@
 use bevy::prelude::*;
 
-use crate::game::waves::waves::WaveType;
+use crate::game::waves::waves::{WaveType, WaveInfo};
 
 use super::CALIBRI_FONT_PATH;
 
-const OBJECTIVE_BORDER_COLOUR: Color = Color::ALICE_BLUE;
+const OBJECTIVE_BORDER_COLOUR: Color = Color::ORANGE;
+const BACKGROUND_COLOUR: Color = Color::BLACK;
 
 #[derive(Component)]
 pub struct ObjectiveText {
@@ -13,12 +14,12 @@ pub struct ObjectiveText {
 
 pub fn create_objective_ui_start_wave(
     commands: &mut Commands,
-    asset_server: &AssetServer,
+    asset_server: &Res<AssetServer>,
     wave_type: WaveType,
-    objective_num: usize,
 ) {
     let image_handle: Handle<Image> = asset_server.load(wave_type.get_objective_img_path());
 
+    let objective_num = wave_type.drops_needed();
     let objective_string = format!("{0}/{1}", 0, objective_num);
 
     commands.spawn_bundle(NodeBundle {
@@ -30,14 +31,31 @@ pub fn create_objective_ui_start_wave(
                 top: Val::Px(10.0),
                 ..default()
             },
+            padding: UiRect::all(Val::Px(10.0)),
             ..default()
         },
         color: OBJECTIVE_BORDER_COLOUR.into(),
         ..default()
     })
     .with_children(|parent| {
+
+        parent.spawn_bundle(NodeBundle {
+            style: Style {
+                size: Size::new(Val::Px(50.0), Val::Px(50.0)),
+                position_type: PositionType::Absolute,
+                ..default()
+            },
+            color: BACKGROUND_COLOUR.into(),
+            ..default()
+        });
+
         parent.spawn_bundle(ImageBundle {
             style: Style {
+                size: Size {
+                    width: Val::Px(50.0),
+                    height: Val::Px(50.0), 
+                },
+                position_type: PositionType::Absolute,
                 ..default()
             },
             image: image_handle.into(),
@@ -62,8 +80,11 @@ pub fn create_objective_ui_start_wave(
 }
 
 pub fn update_objective_text(
-    mut commands: Commands,
     mut query: Query<(&mut Text, &ObjectiveText)>,
+    wave_info: Res<WaveInfo>,
 ) {
-    
+    for (mut text, objective) in query.iter_mut() {
+        let progress = wave_info.get_progress();
+        text.sections[0].value = format!("{0}/{1}", progress, objective.objective_num);
+    }
 }

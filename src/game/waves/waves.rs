@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::game::{components::Player, game::{GAME_WIDTH, GAME_HEIGHT}, health_bar::HealthBarMaterial};
+use crate::game::{components::Player, game::{GAME_WIDTH, GAME_HEIGHT}, health_bar::HealthBarMaterial, hud::objective::create_objective_ui_start_wave};
 
 use super::insect_wave::{start_insect_wave, GOLDEN_WINGS_PATH, INSECT_SPAWNER_NUM};
 
@@ -146,6 +146,12 @@ pub fn start_wave(
                 start_insect_wave(&mut commands, &asset_server, &mut texture_atlases, &mut meshes, &mut materials, event.wave_position);
             }
         }
+
+        create_objective_ui_start_wave(
+            &mut commands,
+            &asset_server,
+            event.wave_type,
+        );
     }
 }
 
