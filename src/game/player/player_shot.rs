@@ -1,8 +1,8 @@
 use bevy::{prelude::*, math::Vec3Swizzles};
 
-use crate::game::{waves::waves::{EndWaveEvent, WAVE_NUM}, input::ClickEvent, components::{ShotSpawnOffset, Player}, shot::ShotResource};
+use crate::game::{waves::waves::{EndWaveEvent, WAVE_NUM}, input::ClickEvent, components::{ShotSpawnOffset, Player}};
 
-use super::{ShotSelected, basic_shot::create_basic_shot};
+use super::basic_shot::create_basic_shot;
 
 const SHOT_TYPES: [Option<ShotType>; WAVE_NUM] = [
     Some(ShotType::Basic),
@@ -43,7 +43,8 @@ pub fn create_shot_on_click(
     player_query: Query<(&Transform, &ShotSpawnOffset), With<Player>>,
     windows: Res<Windows>,
     mut commands: Commands,
-    shot_res: Res<ShotResource>,
+    asset_server: Res<AssetServer>,
+    mut texture_atlases: ResMut<Assets<TextureAtlas>>,
 ) {
     for click_event in click_reader.iter() {
         let (player_trans, shot_offset) = player_query.get_single().unwrap();
@@ -57,10 +58,10 @@ pub fn create_shot_on_click(
 
         create_basic_shot(
             &mut commands, 
+            &asset_server,
+            &mut texture_atlases,
             position, 
             angle, 
-            shot_res.mesh.clone(), 
-            shot_res.material.clone(),
         );
     }
 }

@@ -1,32 +1,12 @@
 use super::{components::{Health, Hitbox, Damage, CollidesEnemy}, player::basic_shot::ShotSpeed};
 use bevy::{
-    prelude::{shape::Circle, *},
+    prelude::*,
     sprite::collide_aabb,
 };
 
 #[derive(Component)]
 pub struct Shot {
     pub timer: Timer,
-}
-
-#[derive(Default)]
-pub struct ShotResource {
-    pub mesh: Handle<Mesh>,
-    pub material: Handle<ColorMaterial>,
-}
-
-pub fn setup_shots(
-    mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<ColorMaterial>>,
-    mut commands: Commands,
-) {
-    let mesh_handle = meshes.add(Mesh::from(Circle::new(1.0)));
-    let material_handle = materials.add(ColorMaterial::from(Color::RED));
-
-    commands.insert_resource(ShotResource {
-        mesh: mesh_handle,
-        material: material_handle,
-    });
 }
 
 pub fn update_shots(
