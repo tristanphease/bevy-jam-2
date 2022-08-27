@@ -15,7 +15,7 @@ pub const SHOT_TYPES: [Option<ShotType>; WAVE_NUM] = [
     None,
 ];
 
-const BASIC_SHOT_COOLDOWN: f32 = 0.5;
+const BASIC_SHOT_COOLDOWN: f32 = 0.2;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ShotType {

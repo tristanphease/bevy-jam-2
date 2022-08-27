@@ -3,7 +3,7 @@ use bevy::prelude::*;
 #[derive(Component)]
 pub struct Player;
 
-#[derive(Component)]
+#[derive(Component, Deref, DerefMut)]
 pub struct Hitbox(pub Vec2);
 
 
@@ -47,3 +47,13 @@ pub struct Damage(pub f32);
 
 #[derive(Component, Deref, DerefMut)]
 pub struct AnimationTimer(pub Timer);
+
+#[derive(Debug, Clone, Copy)]
+pub enum ItemDropType {
+    GoldenInsectWings,
+}
+
+#[derive(Component)]
+pub struct DropsItemOnDeath {
+    pub drop: ItemDropType,
+}

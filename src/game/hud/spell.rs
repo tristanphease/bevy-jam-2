@@ -2,6 +2,8 @@ use bevy::prelude::*;
 
 use crate::game::player::{player_shot::ShotType, basic_shot::BASIC_SHOT_WAND_PATH, PlayerShotsInfo};
 
+use super::CALIBRI_FONT_PATH;
+
 #[derive(Component, Clone, Copy, Deref, DerefMut)]
 pub struct PlayerShotInputNumber(pub usize);
 
@@ -86,7 +88,7 @@ pub fn create_spell_ui(
                 text: Text::from_section(
                     input_number.to_string(), 
                     TextStyle {
-                        font: asset_server.load("fonts/calibri.ttf"),
+                        font: asset_server.load(CALIBRI_FONT_PATH),
                         font_size: 30.0,
                         color: INPUT_TEXT_COLOR,
                     }

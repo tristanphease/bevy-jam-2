@@ -1,14 +1,14 @@
 use bevy::prelude::*;
 use rand::Rng;
 
-use crate::game::{health_bar::{HealthBarMaterial, generate_health_bar, WithHealthBar}, components::{Hitbox, Health, Spawner, CollidesEnemy}};
+use crate::game::{health_bar::{HealthBarMaterial, generate_health_bar, WithHealthBar}, components::{Hitbox, Health, Spawner, CollidesEnemy, DropsItemOnDeath, ItemDropType}};
 
 use super::insect::{spawn_insect, Insect};
 
 const INSECT_SPAWNER_IMAGE_PATH: &str = "images/insect_spawner.png";
 const INSECT_SPAWNER_TEXTURE_SIZE: Vec2 = Vec2::new(224.0, 257.0);
 const INSECT_SPAWNER_SIZE: Vec2 = Vec2::new(200.0, 220.0);
-const INSECT_SPAWNER_HEALTH: f32 = 100.0;
+const INSECT_SPAWNER_HEALTH: f32 = 50.0;
 const SPAWNER_RANDOM_OFFSET: f32 = 100.0;
 
 const MAX_INSECT_NUM: usize = 10;
@@ -49,7 +49,10 @@ pub fn create_insect_spawner(
     .insert(Spawner {
         timer: Timer::from_seconds(10.0, true),
     })
-    .insert(WithHealthBar(health_bar));
+    .insert(WithHealthBar(health_bar))
+    .insert(DropsItemOnDeath {
+        drop: ItemDropType::GoldenInsectWings,
+    });
 }
 
 pub fn update_insect_spawners(

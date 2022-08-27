@@ -7,7 +7,7 @@ use crate::game::{shot::Shot, components::{Hitbox, Damage, CollidesEnemy}};
 const SHOT_SPEED: f32 = 500.0;
 const SHOT_SIZE: f32 = 40.0;
 const SHOT_DAMAGE: f32 = 2.0;
-const SHOT_TIME_LENGTH: f32 = 10.0;
+const SHOT_TIME_LENGTH: f32 = 5.0;
 
 pub const BASIC_SHOT_IMAGE_PATH: &str = "images/shot.png";
 pub const BASIC_SHOT_WAND_PATH: &str = "images/basic_shot_wand.png";

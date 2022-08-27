@@ -5,7 +5,7 @@ use game::{
     health_bar::{HealthBarMaterial, update_health_bars, update_health_bar_positions},
     input::{keyboard_input, mouse_input, ClickEvent},
     player::{setup_player, player_death::check_player_death, PlayerShotsInfo, player_shot::{create_shot_on_click, update_player_shot_cooldowns}},
-    shot::{collides_enemy, update_shots}, enemies::{insect_spawner::update_insect_spawners, insect_ai::move_insects, damage_player::{damage_player, update_damage_cooldowns}}, health::check_entity_death, waves::{waves::{check_wave_start, WaveInfo, StartWaveEvent, start_wave, EndWaveEvent}, insect_wave::check_insect_wave_end}, animate::animate_sprites, hud::spell::update_ui_spell_borders,
+    shot::{collides_enemy, update_shots}, enemies::{insect_spawner::update_insect_spawners, insect_ai::move_insects, damage_player::{damage_player, update_damage_cooldowns}}, entity_death::{check_entity_death}, waves::{waves::{check_wave_start, WaveInfo, StartWaveEvent, start_wave, EndWaveEvent}}, animate::animate_sprites, hud::spell::update_ui_spell_borders, drops::check_player_collect::check_player_drops,
 };
 use start_menu::{button_system, close_menu, setup_menu};
 
@@ -25,7 +25,7 @@ fn main() {
         .add_event::<StartWaveEvent>()
         .add_event::<EndWaveEvent>()
         .add_event::<ClickEvent>()
-        .insert_resource(ClearColor(Color::GREEN))
+        .insert_resource(ClearColor(Color::DARK_GREEN))
         .init_resource::<Time>()
         .init_resource::<WaveInfo>()
         .init_resource::<PlayerShotsInfo>()
@@ -56,11 +56,11 @@ fn main() {
                 .with_system(start_wave)
                 .with_system(damage_player)
                 .with_system(update_damage_cooldowns)
-                .with_system(check_insect_wave_end)
                 .with_system(create_shot_on_click)
                 .with_system(animate_sprites)
                 .with_system(update_ui_spell_borders)
                 .with_system(update_player_shot_cooldowns)
+                .with_system(check_player_drops)
         )
         .run();
 }

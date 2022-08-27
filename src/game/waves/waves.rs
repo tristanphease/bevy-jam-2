@@ -2,7 +2,7 @@ use bevy::prelude::*;
 
 use crate::game::{components::Player, game::{GAME_WIDTH, GAME_HEIGHT}, health_bar::HealthBarMaterial};
 
-use super::insect_wave::start_insect_wave;
+use super::insect_wave::{start_insect_wave, GOLDEN_WINGS_PATH, INSECT_SPAWNER_NUM};
 
 pub const WAVE_NUM: usize = 8;
 const WAVE_SPOTS: [Vec2; WAVE_NUM] = get_wave_spots();
@@ -13,6 +13,20 @@ const WAVES: [WaveType; WAVE_NUM] = [WaveType::Insects; WAVE_NUM];
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum WaveType {
     Insects,
+}
+
+impl WaveType {
+    pub fn get_objective_img_path(&self) -> &str {
+        match self {
+            Self::Insects => GOLDEN_WINGS_PATH,
+        }
+    }
+
+    pub fn drops_needed(&self) -> usize {
+        match self {
+            Self::Insects => INSECT_SPAWNER_NUM,
+        }
+    }
 }
 
 pub struct StartWaveEvent {
@@ -33,6 +47,7 @@ impl EndWaveEvent {
 
 pub struct WaveInfo {
     current_wave: Option<usize>,
+    current_wave_progress: usize,
     waves_completed: [bool; WAVE_NUM],
 }
 
@@ -65,6 +80,18 @@ impl WaveInfo {
         }
         false
     }
+
+    pub fn add_drop(&mut self) {
+        self.current_wave_progress += 1;
+    }
+
+    pub fn get_progress(&self) -> usize {
+        self.current_wave_progress
+    }
+
+    pub fn get_current_wave(&self) -> Option<WaveType> {
+        self.current_wave.map(|index| WAVES[index])
+    }
 }
 
 impl Default for WaveInfo {
@@ -72,6 +99,7 @@ impl Default for WaveInfo {
         Self {
             current_wave: None,
             waves_completed: [false; WAVE_NUM],
+            current_wave_progress: 0,
         }
     }
 }

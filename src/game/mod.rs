@@ -1,7 +1,7 @@
 pub mod camera;
 pub mod components;
 pub mod game;
-pub mod health;
+pub mod entity_death;
 pub mod health_bar;
 pub mod input;
 pub mod player;
@@ -11,3 +11,4 @@ pub mod enemies;
 pub mod waves;
 pub mod animate;
 pub mod hud;
+pub mod drops;
