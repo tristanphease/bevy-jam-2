@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use super::components::Hitbox;
+use super::{components::Hitbox, cauldron::PotionEffect};
 
 const CAULDRON_TEXTURE_SIZE: Vec2 = Vec2::new(353.0, 296.0);
 const CAULDRON_SIZE: Vec2 = Vec2::new(350.0, 300.0);
@@ -24,6 +24,8 @@ pub fn setup_world(
     let texture_atlas = TextureAtlas::from_grid(texture_handler, CAULDRON_TEXTURE_SIZE, 1, 1);
     let texture_atlas_handle = texture_atlases.add(texture_atlas);
 
+    let cauldron_potion = asset_server.load("images/potion_outline.png");
+
     commands
         .spawn_bundle(SpriteSheetBundle {
             sprite: TextureAtlasSprite {
@@ -35,7 +37,19 @@ pub fn setup_world(
             ..default()
         })
         .insert(Hitbox(CAULDRON_SIZE))
-        .insert(Cauldron);
+        .insert(Cauldron)
+        .with_children(|cauldron| {
+            cauldron.spawn_bundle(SpriteBundle {
+                sprite: Sprite { 
+                    color: Color::WHITE,
+                    ..default()
+                },
+                texture: cauldron_potion,
+                transform: Transform::from_translation(Vec3::Z * 5.0),
+                ..default()
+            })
+            .insert(PotionEffect);
+        });
 }
 
 pub fn despawn_all(

@@ -12,3 +12,10 @@ pub fn rotated_rect_collide(
 
     false
 } */
+
+use rand::Rng;
+
+pub fn get_random(min: f32, max: f32) -> f32 {
+    let mut rng = rand::thread_rng();
+    (rng.gen::<f32>() - 0.5) * (max - min) + min
+}

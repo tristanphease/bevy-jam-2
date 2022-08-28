@@ -12,3 +12,4 @@ pub mod waves;
 pub mod animate;
 pub mod hud;
 pub mod drops;
+pub mod cauldron;

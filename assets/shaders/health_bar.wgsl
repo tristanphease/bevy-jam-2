@@ -11,8 +11,9 @@ struct Vertex {
 };
 
 struct HealthBarMaterial {
-    amount: vec2<f32>,
     color: vec4<f32>,
+    amount: f32,
+    width: f32,
 }
 
 @group(1) @binding(0)
@@ -41,7 +42,7 @@ fn fragment(
 ) -> @location(0) vec4<f32> {
     if (uv.x < 1.0) {
         //inside health bar
-        if (vert_pos.x < (material.amount.x * material.amount.y - material.amount.y/2.0)) {
+        if (vert_pos.x < (material.amount * material.width - material.width/2.0)) {
             //health full up to here
             return material.color;
         }
