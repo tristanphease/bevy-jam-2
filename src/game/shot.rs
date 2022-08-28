@@ -28,17 +28,17 @@ pub fn update_shots(
 //handles shots doing damage
 pub fn collides_enemy(
     mut commands: Commands,
-    shot_query: Query<(&Transform, &Hitbox, Entity, &Damage), (With<Shot>, With<CollidesEnemy>)>,
-    mut collides_shot_query: Query<(&Transform, &Hitbox, &mut Health), (Without<Shot>, With<CollidesEnemy>)>,
+    shot_query: Query<(&GlobalTransform, &Hitbox, Entity, &Damage), (With<Shot>, With<CollidesEnemy>)>,
+    mut collides_shot_query: Query<(&GlobalTransform, &Hitbox, &mut Health), (Without<Shot>, With<CollidesEnemy>)>,
 ) {
     for (shot_trans, shot_hitbox, shot_entity, damage) in shot_query.iter() {
         for (object_trans, object_hitbox, mut object_health) in
             collides_shot_query.iter_mut()
         {
             if collide_aabb::collide(
-                    shot_trans.translation,
+                    shot_trans.translation(),
                     shot_hitbox.0,
-                    object_trans.translation,
+                    object_trans.translation(),
                     object_hitbox.0,
                 )
                 .is_some()

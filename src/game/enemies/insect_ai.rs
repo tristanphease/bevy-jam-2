@@ -5,26 +5,21 @@ use crate::game::components::Player;
 
 use super::insect::Insect;
 
-#[derive(Component)]
-pub struct InsectAI {
-    pub target_position: Vec2,
-}
-
 const INSECT_DISTANCE_NEW_POS: f32 = 40.0;
 const INSECT_SPEED: f32 = 70.0;
 
 pub fn move_insects(
-    mut insect_query: Query<(&mut Transform, &mut InsectAI), With<Insect>>,
+    mut insect_query: Query<(&mut Transform, &mut Insect)>,
     player_query: Query<&Transform, (With<Player>, Without<Insect>)>,
     time: Res<Time>,
 ) {
-    for (mut insect_trans, mut insect_ai) in insect_query.iter_mut() {
+    for (mut insect_trans, mut insect) in insect_query.iter_mut() {
         let insect_pos = insect_trans.translation.xy();
-        let mut target_pos = insect_ai.target_position;
+        let mut target_pos = insect.target_position;
         if f32::hypot(insect_pos.x - target_pos.x, insect_pos.y - target_pos.y) < INSECT_DISTANCE_NEW_POS {
             let player_pos = player_query.single().translation.xy();
-            insect_ai.target_position = pick_position(insect_pos, player_pos);
-            target_pos = insect_ai.target_position;
+            insect.target_position = pick_position(insect_pos, player_pos);
+            target_pos = insect.target_position;
         }
 
         //move insect towards ai position

@@ -2,16 +2,16 @@ use bevy::prelude::*;
 
 use crate::game::{components::Player, game::{GAME_WIDTH, GAME_HEIGHT}, health_bar::HealthBarMaterial, hud::objective::create_objective_ui_start_wave};
 
-use super::{insect_wave::{start_insect_wave, GOLDEN_WINGS_PATH, INSECT_SPAWNER_NUM}, digger_wave::{DIGGER_EYES_PATH, NUM_DIGGER_EYES_NEEDED, DiggerResource}};
+use super::{insect_wave::{start_insect_wave, GOLDEN_WINGS_PATH, INSECT_SPAWNER_NUM}, digger_wave::{DIGGER_EYES_PATH, NUM_DIGGER_EYES_NEEDED, DiggerResource}, dragon_wave::{DRAGON_COAL_PATH, NUM_DRAGONS_SPAWN, start_dragon_wave}};
 
 pub const WAVE_NUM: usize = 8;
 const WAVE_SPOTS: [Vec2; WAVE_NUM] = get_wave_spots();
 const PLAYER_DISTANCE_WAVE_START: f32 = 500.0;
 
 const WAVES: [WaveType; WAVE_NUM] = [
-    WaveType::Insects,
+    WaveType::Dragons,
     WaveType::Diggers,
-    WaveType::Insects,
+    WaveType::Dragons,
     WaveType::Insects,
     WaveType::Insects,
     WaveType::Insects,
@@ -23,6 +23,7 @@ const WAVES: [WaveType; WAVE_NUM] = [
 pub enum WaveType {
     Insects,
     Diggers,
+    Dragons,
 }
 
 impl WaveType {
@@ -30,6 +31,7 @@ impl WaveType {
         match self {
             Self::Insects => GOLDEN_WINGS_PATH,
             Self::Diggers => DIGGER_EYES_PATH,
+            Self::Dragons => DRAGON_COAL_PATH,
         }
     }
 
@@ -37,6 +39,7 @@ impl WaveType {
         match self {
             Self::Insects => INSECT_SPAWNER_NUM,
             Self::Diggers => NUM_DIGGER_EYES_NEEDED,
+            Self::Dragons => NUM_DRAGONS_SPAWN,
         }
     }
 }
@@ -47,14 +50,12 @@ pub struct StartWaveEvent {
 }
 
 pub struct EndWaveEvent {
-    wave_type: WaveType,
     waves_complete: usize,
 }
 
 impl EndWaveEvent {
-    pub fn new(wave_type: WaveType, waves_complete: usize) -> Self {
+    pub fn new(waves_complete: usize) -> Self {
         Self { 
-            wave_type, 
             waves_complete
         }
     }
@@ -172,6 +173,9 @@ pub fn start_wave(
                 commands.insert_resource(DiggerResource {
                     next_digger_timer: Timer::from_seconds(1.0, true),
                 });
+            },
+            WaveType::Dragons => {
+                start_dragon_wave(&mut commands, &asset_server, &mut texture_atlases, &mut meshes, &mut materials, event.wave_position);
             }
         }
 

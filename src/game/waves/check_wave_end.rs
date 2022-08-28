@@ -24,7 +24,6 @@ pub fn check_deposit_cauldron(
                 wave_info.end_wave();
 
                 end_wave_event_writer.send(EndWaveEvent::new(
-                    current_wave,
                     wave_info.num_waves_completed(),
                 ));
             }

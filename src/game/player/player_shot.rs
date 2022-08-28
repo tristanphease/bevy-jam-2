@@ -39,6 +39,8 @@ pub struct PlayerShot {
 //adds a shot to the player's arsenal
 pub fn add_shot_wave_end(
     mut commands: Commands,
+    asset_server: Res<AssetServer>,
+    mut player_shots_info: ResMut<PlayerShotsInfo>,
     mut end_wave_event_reader: EventReader<EndWaveEvent>,
 ) { 
     for end_wave_event in end_wave_event_reader.iter() {
@@ -48,6 +50,14 @@ pub fn add_shot_wave_end(
         if let Some(shot_type) = shot_type {
             //0 -> 1, 2 -> 2, 4 -> 3, 6 -> 4
             let input_number = shot_index / 2 + 1;
+
+            add_player_shot(
+                &mut commands, 
+                &asset_server, 
+                &mut player_shots_info, 
+                *shot_type, 
+                input_number,
+            );
         }
     }
 }

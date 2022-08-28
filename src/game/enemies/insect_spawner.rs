@@ -58,7 +58,7 @@ pub fn create_insect_spawner(
 pub fn update_insect_spawners(
     mut commands: Commands,
     mut query: Query<(&mut Spawner, &Transform)>,
-    mut asset_server: Res<AssetServer>,
+    asset_server: Res<AssetServer>,
     mut texture_atlases: ResMut<Assets<TextureAtlas>>,
     mut meshes: ResMut<Assets<Mesh>>, 
     mut materials: ResMut<Assets<HealthBarMaterial>>,
@@ -72,7 +72,7 @@ pub fn update_insect_spawners(
             let mut rng = rand::thread_rng();
             let x = trans.translation.x + (rng.gen::<f32>() - 0.5) * SPAWNER_RANDOM_OFFSET;
             let y = trans.translation.y + (rng.gen::<f32>() - 0.5) * SPAWNER_RANDOM_OFFSET;
-            spawn_insect(&mut commands, &mut asset_server, &mut texture_atlases, &mut meshes, &mut materials, x, y);
+            spawn_insect(&mut commands, &asset_server, &mut texture_atlases, &mut meshes, &mut materials, x, y);
         }
     }
 }

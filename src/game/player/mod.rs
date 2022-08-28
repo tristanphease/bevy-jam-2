@@ -43,7 +43,6 @@ pub fn setup_player(
     mut meshes: ResMut<Assets<Mesh>>, 
     mut materials: ResMut<Assets<HealthBarMaterial>>,
     mut player_shots_info: ResMut<PlayerShotsInfo>,
-    windows: Res<Windows>,
 ) {
     let texture_handler = asset_server.load(WIZARD_IMAGE_PATH);
     let texture_atlas = TextureAtlas::from_grid(texture_handler, PLAYER_TEXTURE_SIZE, 1, 1);

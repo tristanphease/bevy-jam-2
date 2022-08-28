@@ -4,8 +4,8 @@ use game::{
     game::setup_world,
     health_bar::{HealthBarMaterial, update_health_bars, update_health_bar_positions},
     input::{keyboard_input, mouse_input, ClickEvent},
-    player::{setup_player, player_death::check_player_death, PlayerShotsInfo, player_shot::{create_shot_on_click, update_player_shot_cooldowns}},
-    shot::{collides_enemy, update_shots}, enemies::{insect_spawner::update_insect_spawners, insect_ai::move_insects, damage_player::{damage_player, update_damage_cooldowns}, digger::{update_digger_warnings, update_diggers}}, entity_death::{check_entity_death}, waves::{waves::{check_wave_start, WaveInfo, StartWaveEvent, start_wave, EndWaveEvent}, digger_wave::{DiggerResource, create_digger_system}, check_wave_end::check_deposit_cauldron}, animate::animate_sprites, hud::{spell::update_ui_spell_borders, objective::{update_objective_text, delete_objective_on_wave_end}}, drops::check_player_collect::check_player_drops,
+    player::{setup_player, player_death::check_player_death, PlayerShotsInfo, player_shot::{create_shot_on_click, update_player_shot_cooldowns, add_shot_wave_end}},
+    shot::{collides_enemy, update_shots}, enemies::{insect_spawner::update_insect_spawners, insect_ai::move_insects, damage_player::{damage_player, update_damage_cooldowns}, digger::{update_digger_warnings, update_diggers}, dragon_ai::update_dragons}, entity_death::{check_entity_death}, waves::{waves::{check_wave_start, WaveInfo, StartWaveEvent, start_wave, EndWaveEvent}, digger_wave::{DiggerResource, create_digger_system}, check_wave_end::check_deposit_cauldron}, animate::animate_sprites, hud::{spell::update_ui_spell_borders, objective::{update_objective_text, delete_objective_on_wave_end}}, drops::check_player_collect::check_player_drops,
 };
 use start_menu::{button_system, close_menu, setup_menu};
 
@@ -68,6 +68,8 @@ fn main() {
                 .with_system(update_diggers)
                 .with_system(check_deposit_cauldron)
                 .with_system(delete_objective_on_wave_end)
+                .with_system(add_shot_wave_end)
+                .with_system(update_dragons)
         )
         .run();
 }

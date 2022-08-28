@@ -5,11 +5,11 @@ use super::{components::{Health, Player, DropsItemOnDeath, ItemDropType}, health
 pub fn check_entity_death(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
-    query: Query<(Entity, &Health, Option<&WithHealthBar>, Option<&DropsItemOnDeath>, &Transform), Without<Player>>,
+    query: Query<(Entity, &Health, Option<&WithHealthBar>, Option<&DropsItemOnDeath>, &GlobalTransform), Without<Player>>,
 ) {
     for (entity, health, health_bar_option, drops_item_option, transform) in query.iter() {
         if health.current <= 0.0 {
-            commands.entity(entity).despawn();
+            commands.entity(entity).despawn_recursive();
 
             if let Some(health_bar) = health_bar_option {
                 commands.entity(health_bar.0).despawn();
@@ -20,12 +20,12 @@ pub fn check_entity_death(
                     ItemDropType::GoldenInsectWings => create_golden_insect_wings(
                         &mut commands, 
                         &asset_server, 
-                        transform.translation
+                        transform.translation(),
                     ),
                     ItemDropType::DiggerEyes => create_digger_eyes(
                         &mut commands, 
                         &asset_server, 
-                        transform.translation
+                        transform.translation(),
                     ),
                 }
             }

@@ -8,7 +8,7 @@ use bevy::{
 
 use super::components::Health;
 
-#[derive(Component, Debug, Clone, Copy)]
+#[derive(Component, Debug, Clone, Copy, Deref, DerefMut)]
 pub struct WithHealthBar(pub Entity);
 
 #[derive(Component)]
