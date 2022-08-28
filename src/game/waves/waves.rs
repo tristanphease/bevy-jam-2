@@ -9,8 +9,8 @@ const WAVE_SPOTS: [Vec2; WAVE_NUM] = get_wave_spots();
 const PLAYER_DISTANCE_WAVE_START: f32 = 500.0;
 
 const WAVES: [WaveType; WAVE_NUM] = [
-    WaveType::Diggers,
     WaveType::Insects,
+    WaveType::Diggers,
     WaveType::Insects,
     WaveType::Insects,
     WaveType::Insects,

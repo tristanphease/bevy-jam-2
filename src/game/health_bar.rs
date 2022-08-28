@@ -176,23 +176,23 @@ fn add_quad_indices(indices: &mut Vec<u32>, points: [u32; 4]) {
 #[uuid = "84a33ce5-9d30-4855-89a6-828590468b1f"]
 pub struct HealthBarMaterial {
     #[uniform(0)]
-    pub amount: f32,
+    pub amount: Vec2,
 
-    #[uniform(1)]
-    width: f32,
+    #[uniform(0)]
+    color: Color,
 }
 
 impl HealthBarMaterial {
     pub fn set_amount(&mut self, amount: f32) {
-        self.amount = amount;
+        self.amount.x = amount;
     }
 }
 
 impl Default for HealthBarMaterial {
     fn default() -> Self {
         Self { 
-            amount: 1.0,
-            width: BAR_WIDTH as f32,
+            amount: Vec2::new(1.0, BAR_WIDTH as f32),
+            color: Color::RED,
         }
     }
 }
