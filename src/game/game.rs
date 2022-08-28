@@ -8,6 +8,8 @@ const CAULDRON_SIZE: Vec2 = Vec2::new(350.0, 300.0);
 pub const GAME_WIDTH: usize = 2_000;
 pub const GAME_HEIGHT: usize = 2_000;
 
+pub const WAVES_TO_COMPLETE: usize = 4;
+
 #[derive(Component)]
 pub struct Cauldron;
 
@@ -34,4 +36,13 @@ pub fn setup_world(
         })
         .insert(Hitbox(CAULDRON_SIZE))
         .insert(Cauldron);
+}
+
+pub fn despawn_all(
+    mut commands: Commands,
+    query: Query<Entity>,
+) {
+    for entity in query.iter() {
+        commands.entity(entity).despawn_recursive();
+    }
 }

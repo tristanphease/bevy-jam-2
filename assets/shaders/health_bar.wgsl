@@ -11,7 +11,7 @@ struct Vertex {
 };
 
 struct HealthBarMaterial {
-    @align(16) amount: vec2<f32>,
+    amount: vec2<f32>,
     color: vec4<f32>,
 }
 
