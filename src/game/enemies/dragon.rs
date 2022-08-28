@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::game::{health_bar::{HealthBarMaterial, generate_health_bar, WithHealthBar}, components::{Health, Hitbox, CollidesEnemy}};
+use crate::game::{health_bar::{HealthBarMaterial, generate_health_bar, WithHealthBar}, components::{Health, Hitbox, CollidesEnemy, Damage, CollidesPlayer, DamageCooldown}};
 
 use super::dragon_ai::{DragonState, Dragon};
 
@@ -9,6 +9,7 @@ const DRAGON_TEXTURE_SIZE: Vec2 = Vec2::new(243.0, 251.0);
 const DRAGON_SIZE: Vec2 = Vec2::new(200.0, 200.0);
 
 const DRAGON_HEALTH: f32 = 70.0;
+const DRAGON_DAMAGE: f32 = 5.0;
 
 pub fn create_dragon(
     commands: &mut Commands, 
@@ -42,5 +43,8 @@ pub fn create_dragon(
         state: DragonState::Moving,
         timer: Timer::from_seconds(2.0, true),
     })
-    .insert(CollidesEnemy);
+    .insert(CollidesEnemy)
+    .insert(CollidesPlayer)
+    .insert(Damage(DRAGON_DAMAGE))
+    .insert(DamageCooldown { timer: Timer::from_seconds(2.0, true) });
 }

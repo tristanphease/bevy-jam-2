@@ -6,27 +6,22 @@ use super::ItemDrop;
 
 pub fn check_player_drops(
     mut commands: Commands,
-    player_query: Query<(&Transform, &Hitbox), With<Player>>,
-    drops_query: Query<(&Transform, &Hitbox, Entity), With<ItemDrop>>,
+    player_query: Query<(&GlobalTransform, &Hitbox), With<Player>>,
+    drops_query: Query<(&GlobalTransform, &Hitbox, Entity), With<ItemDrop>>,
     mut wave_info: ResMut<WaveInfo>,
 ) {
     let (player_trans, player_hitbox) = player_query.single();
 
     for (drop_trans, drop_hitbox, drop_entity) in drops_query.iter() {
         if collide_aabb::collide(
-            player_trans.translation,
+            player_trans.translation(),
             **player_hitbox,
-            drop_trans.translation,
+            drop_trans.translation(),
             **drop_hitbox,
         ).is_some() {
             wave_info.add_drop();
 
             commands.entity(drop_entity).despawn();
-
-            if wave_info.get_progress() >= wave_info.get_current_wave().unwrap().drops_needed() {
-                wave_info.end_wave();
-                break;
-            }
         }
     }
 }

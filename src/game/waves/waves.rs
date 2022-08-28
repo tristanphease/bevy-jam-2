@@ -2,14 +2,14 @@ use bevy::prelude::*;
 
 use crate::game::{components::Player, game::{GAME_WIDTH, GAME_HEIGHT}, health_bar::HealthBarMaterial, hud::objective::create_objective_ui_start_wave};
 
-use super::{insect_wave::{start_insect_wave, GOLDEN_WINGS_PATH, INSECT_SPAWNER_NUM}, digger_wave::{DIGGER_EYES_PATH, NUM_DIGGER_EYES_NEEDED, DiggerResource}, dragon_wave::{DRAGON_COAL_PATH, NUM_DRAGONS_SPAWN, start_dragon_wave}};
+use super::{insect_wave::{start_insect_wave, GOLDEN_WINGS_PATH, INSECT_SPAWNER_NUM}, digger_wave::{DIGGER_EYES_PATH, NUM_DIGGER_EYES_NEEDED, DiggerResource}, dragon_wave::{DRAGON_COAL_PATH, NUM_DRAGONS_SPAWN, start_dragon_wave}, cat_wave::{CAT_DROP_IMAGE_PATH, CAT_NUM, create_cat}};
 
 pub const WAVE_NUM: usize = 8;
 const WAVE_SPOTS: [Vec2; WAVE_NUM] = get_wave_spots();
 const PLAYER_DISTANCE_WAVE_START: f32 = 500.0;
 
 const WAVES: [WaveType; WAVE_NUM] = [
-    WaveType::Dragons,
+    WaveType::Cat,
     WaveType::Diggers,
     WaveType::Dragons,
     WaveType::Insects,
@@ -24,6 +24,7 @@ pub enum WaveType {
     Insects,
     Diggers,
     Dragons,
+    Cat,
 }
 
 impl WaveType {
@@ -32,6 +33,7 @@ impl WaveType {
             Self::Insects => GOLDEN_WINGS_PATH,
             Self::Diggers => DIGGER_EYES_PATH,
             Self::Dragons => DRAGON_COAL_PATH,
+            Self::Cat => CAT_DROP_IMAGE_PATH,
         }
     }
 
@@ -40,6 +42,7 @@ impl WaveType {
             Self::Insects => INSECT_SPAWNER_NUM,
             Self::Diggers => NUM_DIGGER_EYES_NEEDED,
             Self::Dragons => NUM_DRAGONS_SPAWN,
+            Self::Cat => CAT_NUM,
         }
     }
 }
@@ -176,6 +179,9 @@ pub fn start_wave(
             },
             WaveType::Dragons => {
                 start_dragon_wave(&mut commands, &asset_server, &mut texture_atlases, &mut meshes, &mut materials, event.wave_position);
+            },
+            WaveType::Cat => {
+                create_cat(&mut commands, &asset_server, &mut texture_atlases, &mut meshes, &mut materials, event.wave_position);
             }
         }
 

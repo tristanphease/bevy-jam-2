@@ -5,3 +5,4 @@ pub mod damage_player;
 pub mod digger;
 pub mod dragon;
 pub mod dragon_ai;
+pub mod cat;

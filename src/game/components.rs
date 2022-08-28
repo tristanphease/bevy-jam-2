@@ -3,7 +3,7 @@ use bevy::prelude::*;
 #[derive(Component)]
 pub struct Player;
 
-#[derive(Component, Deref, DerefMut)]
+#[derive(Component, Debug, Deref, DerefMut)]
 pub struct Hitbox(pub Vec2);
 
 
@@ -52,6 +52,7 @@ pub struct AnimationTimer(pub Timer);
 pub enum ItemDropType {
     GoldenInsectWings,
     DiggerEyes,
+    CatTail,
 }
 
 #[derive(Component)]
