@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::game::{health_bar::{HealthBarMaterial, generate_health_bar, WithHealthBar}, components::{Health, Hitbox, CollidesEnemy, Damage, CollidesPlayer, DamageCooldown}};
+use crate::game::{health_bar::{HealthBarMaterial, generate_health_bar, WithHealthBar}, components::{Health, Hitbox, CollidesEnemy, Damage, CollidesPlayer, DamageCooldown, DropsItemOnDeath, ItemDropType}};
 
 use super::dragon_ai::{DragonState, Dragon};
 
@@ -46,5 +46,6 @@ pub fn create_dragon(
     .insert(CollidesEnemy)
     .insert(CollidesPlayer)
     .insert(Damage(DRAGON_DAMAGE))
-    .insert(DamageCooldown { timer: Timer::from_seconds(2.0, true) });
+    .insert(DamageCooldown { timer: Timer::from_seconds(2.0, true) })
+    .insert(DropsItemOnDeath { drop: ItemDropType::DragonCoal });
 }

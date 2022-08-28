@@ -1,6 +1,6 @@
 use bevy::{prelude::*};
 
-use super::{components::{Health, Player, DropsItemOnDeath, ItemDropType}, health_bar::WithHealthBar, drops::{golden_insect_wings::create_golden_insect_wings, digger_eyes::create_digger_eyes, cat_tail::create_cat_tail}};
+use super::{components::{Health, Player, DropsItemOnDeath, ItemDropType}, health_bar::WithHealthBar, drops::{golden_insect_wings::create_golden_insect_wings, digger_eyes::create_digger_eyes, cat_tail::create_cat_tail, dragon_coal::create_dragon_coal}};
 
 pub fn check_entity_death(
     mut commands: Commands,
@@ -32,6 +32,11 @@ pub fn check_entity_death(
                         &mut commands, 
                         &asset_server, 
                         position,
+                    ),
+                    ItemDropType::DragonCoal => create_dragon_coal(
+                        &mut commands, 
+                        &asset_server, 
+                        position
                     ),
                 }
             }

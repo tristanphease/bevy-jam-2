@@ -53,6 +53,7 @@ pub enum ItemDropType {
     GoldenInsectWings,
     DiggerEyes,
     CatTail,
+    DragonCoal,
 }
 
 #[derive(Component)]
