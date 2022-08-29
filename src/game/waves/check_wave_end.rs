@@ -1,10 +1,11 @@
 use bevy::{prelude::*, sprite::collide_aabb};
 
-use crate::{game::{components::{Player, Hitbox}, game::{Cauldron, WAVES_TO_COMPLETE}}, GameState};
+use crate::{game::{components::{Player, Hitbox}, game::{Cauldron, WAVES_TO_COMPLETE}}, GameState, GameResult, GameResultResource};
 
 use super::waves::{WaveInfo, EndWaveEvent};
 
 pub fn check_deposit_cauldron(
+    mut commands: Commands,
     player_query: Query<(&GlobalTransform, &Hitbox), With<Player>>,
     cauldron_query: Query<(&GlobalTransform, &Hitbox), With<Cauldron>>,
     mut wave_info: ResMut<WaveInfo>,
@@ -29,6 +30,9 @@ pub fn check_deposit_cauldron(
                 ));
 
                 if wave_info.num_waves_completed() >= WAVES_TO_COMPLETE {
+                    commands.insert_resource(GameResultResource {
+                        result: GameResult::Win,
+                    });
                     app_state.set(GameState::GameOver).unwrap();
                 }
             }

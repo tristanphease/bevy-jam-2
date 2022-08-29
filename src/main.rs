@@ -1,7 +1,7 @@
 use bevy::{prelude::*, sprite::Material2dPlugin};
 use game::{
     camera::{camera_follow_player, setup_camera},
-    game::{setup_world, despawn_all},
+    game::{setup_world, cleanup_game},
     health_bar::{HealthBarMaterial, update_health_bars, update_health_bar_positions},
     input::{keyboard_input, mouse_input, ClickEvent},
     player::{setup_player, player_death::check_player_death, PlayerShotsInfo, player_shot::{create_shot_on_click, update_player_shot_cooldowns, add_shot_wave_end}, zap_spell::update_zaps},
@@ -19,6 +19,16 @@ pub enum GameState {
     StartMenu,
     Game,
     GameOver,
+}
+
+pub struct GameResultResource {
+    pub result: GameResult,
+}
+
+#[derive(Debug, Clone, Eq, PartialEq, Hash)]
+pub enum GameResult {
+    Win,
+    Loss,
 }
 
 fn main() {
@@ -80,13 +90,16 @@ fn main() {
         )
         .add_system_set(
             SystemSet::on_exit(GameState::Game)
-                .with_system(despawn_all)
+                .with_system(cleanup_game)
         )
         .add_system_set(
             SystemSet::on_enter(GameState::GameOver).with_system(setup_game_over_menu)
         )
         .add_system_set(
-            SystemSet::on_update(GameState::GameOver).with_system(game_over_button_system)
+            SystemSet::on_update(GameState::GameOver)
+                .with_system(game_over_button_system)
+                .with_system(update_cauldron)
+                .with_system(update_bubbles)
         )
         .add_system_set(
             SystemSet::on_exit(GameState::GameOver).with_system(close_game_over_menu)

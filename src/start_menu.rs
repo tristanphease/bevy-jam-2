@@ -20,7 +20,7 @@ pub fn setup_menu(mut commands: Commands, asset_server: Res<AssetServer>) {
                 align_items: AlignItems::Center,
                 ..default()
             },
-            color: UiColor(Color::rgb(0.5, 0.5, 0.5)),
+            color: UiColor(Color::rgb(0.0, 0.0, 0.0)),
             ..default()
         })
         .insert(MenuComponent)
@@ -31,7 +31,7 @@ pub fn setup_menu(mut commands: Commands, asset_server: Res<AssetServer>) {
                     TextStyle {
                         font: asset_server.load("fonts/calibri.ttf"),
                         font_size: 40.0,
-                        color: Color::rgb(0.0, 0.0, 0.0),
+                        color: Color::rgb(1.0, 1.0, 1.0),
                     },
                 ))
                 .insert(MenuComponent);

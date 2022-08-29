@@ -1,5 +1,7 @@
 use bevy::prelude::*;
 
+use crate::{GameResultResource, GameResult};
+
 use super::{components::Hitbox, cauldron::PotionEffect};
 
 const CAULDRON_TEXTURE_SIZE: Vec2 = Vec2::new(353.0, 296.0);
@@ -52,11 +54,15 @@ pub fn setup_world(
         });
 }
 
-pub fn despawn_all(
+pub fn cleanup_game(
     mut commands: Commands,
-    query: Query<Entity>,
+    query: Query<(Entity, Option<&Cauldron>, Option<&PotionEffect>)>,
+    game_result: Res<GameResultResource>,
 ) {
-    for entity in query.iter() {
-        commands.entity(entity).despawn_recursive();
+    for (entity, cauldron_option, potion_option) in query.iter() {
+        if !(game_result.result == GameResult::Win && (cauldron_option.is_some() || potion_option.is_some())) {
+            commands.entity(entity).despawn_recursive();
+        }
+        
     }
 }
