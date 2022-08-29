@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::game::player::{player_shot::ShotType, basic_shot::BASIC_SHOT_WAND_PATH, PlayerShotsInfo};
+use crate::game::player::{player_shot::ShotType, basic_shot::BASIC_SHOT_WAND_PATH, PlayerShotsInfo, zap_spell::ZAP_IMAGE_PATH};
 
 use super::CALIBRI_FONT_PATH;
 
@@ -13,9 +13,9 @@ pub struct SpellUiBorder;
 #[derive(Component, Clone, Copy)]
 pub struct SpellUiCooldown;
 
-const BORDER_SELECTED_COLOUR: Color = Color::MIDNIGHT_BLUE;
-const BORDER_NON_SELECTED_COLOUR: Color = Color::ALICE_BLUE;
-const COOLDOWN_COLOUR: Color = Color::GRAY;
+const BORDER_SELECTED_COLOUR: Color = Color::BLACK;
+const BORDER_NON_SELECTED_COLOUR: Color = Color::DARK_GRAY;
+const COOLDOWN_COLOUR: Color = Color::DARK_GRAY;
 const BACKGROUND_COLOUR: Color = Color::BLACK;
 const INPUT_TEXT_COLOR: Color = Color::WHITE;
 
@@ -31,6 +31,9 @@ pub fn create_spell_ui(
         ShotType::Basic => {
             asset_server.load(BASIC_SHOT_WAND_PATH)
         }
+        ShotType::Zap => {
+            asset_server.load(ZAP_IMAGE_PATH)
+        },
     };
 
     let border_colour = if selected {
@@ -44,7 +47,7 @@ pub fn create_spell_ui(
             size: Size::new(Val::Px(70.0), Val::Px(70.0)),
             position_type: PositionType::Absolute,
             position: UiRect {
-                left: Val::Px(10.0),
+                left: Val::Px(10.0 + (input_number as f32 - 1.0) * 90.0),
                 top: Val::Px(10.0),
                 ..default()
             },

@@ -41,7 +41,7 @@ pub struct DamageCooldown {
     pub timer: Timer,
 }
 
-#[derive(Component)]
+#[derive(Component, Deref, DerefMut)]
 pub struct Damage(pub f32);
 
 

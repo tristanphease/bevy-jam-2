@@ -4,8 +4,9 @@ use crate::game::waves::waves::{WaveType, WaveInfo, EndWaveEvent};
 
 use super::CALIBRI_FONT_PATH;
 
-const OBJECTIVE_BORDER_COLOUR: Color = Color::ORANGE;
-const BACKGROUND_COLOUR: Color = Color::BLACK;
+const OBJECTIVE_BORDER_COLOUR: Color = Color::rgba(0.0, 0.0, 0.0, 0.0);
+const BACKGROUND_COLOUR: Color = Color::rgba(0.0, 0.0, 0.0, 0.0);
+const OBJECTIVE_TEXT_COLOUR: Color = Color::BLACK;
 
 #[derive(Component)]
 pub struct ObjectiveText {
@@ -72,9 +73,18 @@ pub fn create_objective_ui_start_wave(
                 TextStyle { 
                     font: asset_server.load(CALIBRI_FONT_PATH), 
                     font_size: 30.0, 
-                    color: Color::BLACK
+                    color: OBJECTIVE_TEXT_COLOUR,
                 }
             ),
+            style: Style {
+                position: UiRect {
+                    left: Val::Px(15.0),
+                    bottom: Val::Px(-20.0),
+                    ..default()
+                },
+                position_type: PositionType::Absolute,
+                ..default()
+            },
             ..default()
         })
         .insert(ObjectiveText {

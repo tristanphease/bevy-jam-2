@@ -2,12 +2,12 @@ use bevy::{prelude::*, math::Vec3Swizzles};
 
 use crate::game::{waves::waves::{EndWaveEvent, WAVE_NUM}, input::ClickEvent, components::{ShotSpawnOffset, Player}, hud::spell::{create_spell_ui, PlayerShotInputNumber, SpellUiCooldown, update_ui_spell_cooldown}};
 
-use super::{basic_shot::create_basic_shot, PlayerShotsInfo};
+use super::{basic_shot::create_basic_shot, PlayerShotsInfo, zap_spell::create_zap_spell};
 
 pub const SHOT_TYPES: [Option<ShotType>; WAVE_NUM] = [
     Some(ShotType::Basic),
     None,
-    None,
+    Some(ShotType::Zap),
     None,
     None,
     None,
@@ -16,16 +16,19 @@ pub const SHOT_TYPES: [Option<ShotType>; WAVE_NUM] = [
 ];
 
 const BASIC_SHOT_COOLDOWN: f32 = 0.3;
+const ZAP_COOLDOWN: f32 = 2.0;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ShotType {
     Basic,
+    Zap,
 }
 
 impl ShotType {
     fn cooldown(&self) -> f32 {
         match self {
             Self::Basic => BASIC_SHOT_COOLDOWN,
+            Self::Zap => ZAP_COOLDOWN,
         }
     }
 }
@@ -117,7 +120,15 @@ pub fn create_shot_on_click(
                                 position, 
                                 angle, 
                             );
-                        }
+                        },
+                        ShotType::Zap => {
+                            create_zap_spell(
+                                &mut commands, 
+                                &asset_server, 
+                                position, 
+                                angle
+                            );
+                        },
                     }
                 }
             }

@@ -19,6 +19,7 @@ const WIZARD_IMAGE_PATH: &str = "images/wizard.png";
 pub mod player_death;
 pub mod player_shot;
 pub mod basic_shot;
+pub mod zap_spell;
 
 pub struct PlayerShotsInfo {
     pub selected_shot_type: ShotType,

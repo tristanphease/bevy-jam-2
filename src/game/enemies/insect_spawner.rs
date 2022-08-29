@@ -1,7 +1,9 @@
+use std::time::Duration;
+
 use bevy::prelude::*;
 use rand::Rng;
 
-use crate::game::{health_bar::{HealthBarMaterial, generate_health_bar, WithHealthBar}, components::{Hitbox, Health, Spawner, CollidesEnemy, DropsItemOnDeath, ItemDropType}};
+use crate::game::{health_bar::{HealthBarMaterial, generate_health_bar, WithHealthBar}, components::{Hitbox, Health, Spawner, CollidesEnemy, DropsItemOnDeath, ItemDropType}, util::get_random};
 
 use super::insect::{spawn_insect, Insect};
 
@@ -12,6 +14,9 @@ const INSECT_SPAWNER_HEALTH: f32 = 50.0;
 const SPAWNER_RANDOM_OFFSET: f32 = 100.0;
 
 const MAX_INSECT_NUM: usize = 10;
+
+const MIN_SPAWNER_TIME: f32 = 8.0;
+const MAX_SPAWNER_TIME: f32 = 12.0;
 
 #[derive(Component)]
 pub struct InsectSpawner;
@@ -32,6 +37,11 @@ pub fn create_insect_spawner(
 
     let health_bar = generate_health_bar(commands, meshes, materials, spawner_pos, INSECT_SPAWNER_SIZE.y/2.0);
 
+    //start spawner to spawn insects
+    let spawner_time = get_random(MIN_SPAWNER_TIME, MAX_SPAWNER_TIME);
+    let mut spawner_timer = Timer::from_seconds(spawner_time, true);
+    spawner_timer.set_elapsed(Duration::from_secs_f32(spawner_time));
+
     commands.spawn_bundle(SpriteSheetBundle {
         sprite: TextureAtlasSprite {
             custom_size: Some(INSECT_SPAWNER_SIZE),
@@ -47,7 +57,7 @@ pub fn create_insect_spawner(
     .insert(CollidesEnemy)
     .insert(InsectSpawner)
     .insert(Spawner {
-        timer: Timer::from_seconds(10.0, true),
+        timer: spawner_timer,
     })
     .insert(WithHealthBar(health_bar))
     .insert(DropsItemOnDeath {
